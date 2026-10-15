@@ -23,6 +23,9 @@ def fake_client(monkeypatch):
     monkeypatch.setattr(llm.time, "sleep", sleeps.append)
     monkeypatch.setattr(llm.config, "MODEL_FALLBACKS", [])  # tests opt in to fallbacks explicitly
     monkeypatch.setattr(llm, "_model_down_until", {})
+    # The rate limiter also sleeps (sub-millisecond here). Windows' coarse clock hid that; Linux CI
+    # counted it. Disable it so `sleeps` holds only retry/backoff waits.
+    monkeypatch.setattr(llm, "_throttle", lambda: None)
 
     def install(outcomes):
         models = FakeModels(outcomes)
