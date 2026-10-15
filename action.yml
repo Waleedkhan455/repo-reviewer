@@ -1,0 +1,49 @@
+name: Repo Reviewer
+description: Multi-agent AI review of the lines a pull request changed, with a Verifier that drops hallucinated findings.
+author: Repo Reviewer
+branding:
+  icon: search
+  color: blue
+
+inputs:
+  gemini-api-key:
+    description: Google Gemini API key (free at aistudio.google.com). Pass it from a repository secret.
+    required: true
+  github-token:
+    description: Token used to post the review. Needs pull-requests write permission.
+    default: ${{ github.token }}
+  fail-on:
+    description: Fail the check when a confirmed issue on the changed lines is at least this severe (none, low, medium, high).
+    default: none
+  bug-hunter:
+    description: Also run the experimental Bug Hunter agent ("true" or "false").
+    default: "false"
+  model:
+    description: Primary Gemini model (optional; falls back automatically when it is unavailable).
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+      with:
+        python-version: "3.12"
+
+    - name: Install Repo Reviewer
+      shell: bash
+      run: |
+        grep -v -E '^(streamlit|pytest)==' "$GITHUB_ACTION_PATH/requirements.txt" > "$RUNNER_TEMP/rr-requirements.txt"
+        python -m pip install --quiet -r "$RUNNER_TEMP/rr-requirements.txt"
+
+    # Inputs reach the script only through environment variables, never interpolated into `run:`
+    # (that would allow script injection from crafted input values).
+    - name: Review the pull request
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        GEMINI_API_KEY: ${{ inputs.gemini-api-key }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        RR_FAIL_ON: ${{ inputs.fail-on }}
+        RR_BUG_HUNTER: ${{ inputs.bug-hunter == 'true' && '1' || '' }}
+        RR_MODEL: ${{ inputs.model }}
+      run: python -m src.pr_review

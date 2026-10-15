@@ -1,0 +1,498 @@
+{
+  "run_id": "e779d0c56435",
+  "repo": "fportantier/vulpy",
+  "commit": "5249cc8b05a1c37f6b2f757b1cf16a509c327122",
+  "pipeline_version": "4",
+  "model": "gemini-3.8-flash",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "py",
+      "sh"
+    ],
+    "assignments": {
+      "architect": [
+        "README.rst",
+        "requirements.txt",
+        "bad/mod_api.py",
+        "good/mod_api.py",
+        "bad/libuser.py",
+        "good/libapi.py",
+        "bad/libapi.py",
+        "good/libuser.py",
+        "bad/db_init.py",
+        "good/mod_mfa.py",
+        "utils/ca-csr-load.py",
+        "good/mod_user.py"
+      ],
+      "security": [
+        "bad/mod_api.py",
+        "good/mod_api.py",
+        "bad/libuser.py",
+        "good/libapi.py",
+        "bad/libapi.py",
+        "good/libuser.py",
+        "bad/db_init.py",
+        "good/mod_mfa.py",
+        "utils/ca-csr-load.py",
+        "good/mod_user.py",
+        "good/libsession.py",
+        "bad/api_post.py",
+        "utils/ca-csr-create.py",
+        "bad/vulpy-ssl.py",
+        "good/vulpy-ssl.py",
+        "utils/generate_bad_passwords.py",
+        "good/db_init.py",
+        "bad/db.py",
+        "bad/api_list.py",
+        "bad/libmfa.py",
+        "good/libmfa.py",
+        "utils/ca-create.py",
+        "good/libposts.py",
+        "bad/libposts.py",
+        "bad/mod_user.py",
+        "utils/scrypt-crack.py",
+        "utils/aes-encrypt.py",
+        "utils/aes-decrypt.py",
+        "utils/scrypt-verify.py",
+        "utils/rsa-decrypt.py",
+        "utils/rsa-encrypt.py",
+        "utils/scrypt-generate.py",
+        "bad/libsession.py",
+        "good/cutpasswd.py",
+        "good/vulpy.py",
+        "bad/vulpy.py",
+        "good/mod_welcome1.py",
+        "utils/rsa-keygen.py",
+        "bad/mod_posts.py",
+        "good/mod_posts.py",
+        "utils/skey.py",
+        "bad/brute.py",
+        "bad/mod_hello.py",
+        "good/mod_hello.py",
+        "utils/rsa-verify.py",
+        "utils/httpbrute.py",
+        "utils/rsa-sign.py",
+        "utils/crack-cvv.py",
+        "good/httpbrute.py",
+        "utils/luncheck.py",
+        "bad/mod_mfa.py",
+        "utils/hashfile.py",
+        "utils/crack-hash.py",
+        "utils/hmac_generate.py",
+        "install-on-kali.sh",
+        "bad/mod_csp.py",
+        "good/mod_csp.py",
+        "utils/fernet-generate-key.py"
+      ],
+      "quality": [
+        "bad/mod_api.py",
+        "good/mod_api.py",
+        "bad/libuser.py",
+        "good/libapi.py",
+        "bad/libapi.py",
+        "good/libuser.py",
+        "bad/db_init.py",
+        "good/mod_mfa.py",
+        "utils/ca-csr-load.py",
+        "good/mod_user.py",
+        "good/libsession.py",
+        "bad/api_post.py",
+        "utils/ca-csr-create.py",
+        "bad/vulpy-ssl.py",
+        "good/vulpy-ssl.py",
+        "utils/generate_bad_passwords.py",
+        "good/db_init.py",
+        "bad/db.py",
+        "bad/api_list.py",
+        "bad/libmfa.py",
+        "good/libmfa.py",
+        "utils/ca-create.py",
+        "good/libposts.py",
+        "bad/libposts.py",
+        "bad/mod_user.py",
+        "utils/scrypt-crack.py",
+        "utils/aes-encrypt.py",
+        "utils/aes-decrypt.py",
+        "utils/scrypt-verify.py",
+        "utils/rsa-decrypt.py",
+        "utils/rsa-encrypt.py",
+        "utils/scrypt-generate.py",
+        "bad/libsession.py",
+        "good/cutpasswd.py",
+        "good/vulpy.py",
+        "bad/vulpy.py",
+        "good/mod_welcome1.py",
+        "utils/rsa-keygen.py",
+        "bad/mod_posts.py",
+        "good/mod_posts.py",
+        "utils/skey.py",
+        "bad/brute.py",
+        "bad/mod_hello.py",
+        "good/mod_hello.py",
+        "utils/rsa-verify.py",
+        "utils/httpbrute.py",
+        "utils/rsa-sign.py",
+        "utils/crack-cvv.py",
+        "good/httpbrute.py",
+        "utils/luncheck.py",
+        "bad/mod_mfa.py",
+        "utils/hashfile.py",
+        "utils/crack-hash.py",
+        "utils/hmac_generate.py",
+        "bad/mod_csp.py",
+        "good/mod_csp.py",
+        "utils/fernet-generate-key.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": []
+    }
+  },
+  "tool_hits": 134,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "SEC-1",
+      "file": "bad/libuser.py",
+      "line": 12,
+      "severity": "high",
+      "issue": "SQL query built with string formatting",
+      "evidence": "user = c.execute(\"SELECT * FROM users WHERE username = '{}' and password = '{}'\".format(username, password)).fetchone()",
+      "fix": "Use parameterized queries",
+      "source": "security"
+    },
+    {
+      "id": "SEC-2",
+      "file": "bad/libuser.py",
+      "line": 25,
+      "severity": "high",
+      "issue": "SQL query built with string formatting",
+      "evidence": "c.execute(\"INSERT INTO users (username, password, failures, mfa_enabled, mfa_secret) VALUES ('%s', '%s', '%d', '%d', '%s')\" %(username, password, 0, 0, ''))",
+      "fix": "Use parameterized queries",
+      "source": "security"
+    },
+    {
+      "id": "SEC-3",
+      "file": "bad/libuser.py",
+      "line": 53,
+      "severity": "high",
+      "issue": "SQL query built with string formatting",
+      "evidence": "c.execute(\"UPDATE users SET password = '{}' WHERE username = '{}'\".format(password, username))",
+      "fix": "Use parameterized queries",
+      "source": "security"
+    },
+    {
+      "id": "SEC-4",
+      "file": "good/libuser.py",
+      "line": 61,
+      "severity": "high",
+      "issue": "SQL query built with string formatting",
+      "evidence": "c.execute(\"INSERT INTO users (username, password, salt, failures, mfa_enabled, mfa_secret) VALUES ('%s', '%s', '%s', '%d', '%d', '%s')\" %(username, '', '', 0, 0, ''))",
+      "fix": "Use parameterized queries",
+      "source": "security"
+    },
+    {
+      "id": "SEC-5",
+      "file": "bad/db_init.py",
+      "line": 20,
+      "severity": "high",
+      "issue": "SQL query built with string formatting",
+      "evidence": "c.execute(\"INSERT INTO users (username, password, failures, mfa_enabled, mfa_secret) VALUES ('%s', '%s', '%d', '%d', '%s')\" %(u, p, 0, 0, ''))",
+      "fix": "Use parameterized queries",
+      "source": "security"
+    },
+    {
+      "id": "SEC-6",
+      "file": "bad/db.py",
+      "line": 19,
+      "severity": "high",
+      "issue": "SQL query built with string formatting",
+      "evidence": "        c.execute(\"INSERT INTO users (user, password, failures) VALUES ('%s', '%s', '%d')\" %(u, p, 0))",
+      "fix": "Use parameterized queries like c.execute(\"INSERT INTO users (user, password, failures) VALUES (?, ?, ?)\", (u, p, 0))",
+      "source": "security"
+    },
+    {
+      "id": "SEC-7",
+      "file": "good/libapi.py",
+      "line": 10,
+      "severity": "medium",
+      "issue": "Hard-coded secret key",
+      "evidence": "secret = 'MY****'",
+      "fix": "Load secret from environment variable or secure configuration",
+      "source": "security"
+    },
+    {
+      "id": "QUAL-1",
+      "file": "good/mod_user.py",
+      "line": 48,
+      "severity": "medium",
+      "issue": "Local variable email is assigned to password value and never used",
+      "evidence": "        email = request.form.get('password')",
+      "fix": "Remove unused local variable email.",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-2",
+      "file": "good/mod_user.py",
+      "line": 87,
+      "severity": "medium",
+      "issue": "Unreachable code after return statement",
+      "evidence": "    return redirect('/')\n    flash(\"Password changed\")",
+      "fix": "Move flash() before the return statement.",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-3",
+      "file": "bad/libuser.py",
+      "line": 2,
+      "severity": "medium",
+      "issue": "Module imports itself",
+      "evidence": "import libuser",
+      "fix": "Remove the self-import.",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-4",
+      "file": "good/libapi.py",
+      "line": 36,
+      "severity": "medium",
+      "issue": "Broad except clause catches all exceptions and swallows them with print",
+      "evidence": "    except Exception as e:\n        print(e)\n        return None",
+      "fix": "Catch specific exceptions or handle errors appropriately.",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-5",
+      "file": "good/libsession.py",
+      "line": 49,
+      "severity": "medium",
+      "issue": "Broad except clause catches all exceptions and swallows them with print",
+      "evidence": "    except Exception as e:\n        print(e)\n        return {}",
+      "fix": "Catch specific exceptions instead of bare Exception.",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-6",
+      "file": "utils/generate_bad_passwords.py",
+      "line": 18,
+      "severity": "medium",
+      "issue": "File opened without a context manager",
+      "evidence": "temp_outfile = tempfile.NamedTemporaryFile(delete=False)",
+      "fix": "Use NamedTemporaryFile as a context manager",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-7",
+      "file": "bad/libsession.py",
+      "line": 21,
+      "severity": "medium",
+      "issue": "Swallowed exception using bare except and pass",
+      "evidence": "    except Exception:\n        pass",
+      "fix": "Handle or log the exception appropriately instead of suppressing it silently.",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-8",
+      "file": "bad/mod_mfa.py",
+      "line": 1,
+      "severity": "medium",
+      "issue": "Public module has no docstring",
+      "evidence": "import base64",
+      "fix": "Add a module-level docstring describing the blueprint",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-9",
+      "file": "bad/mod_csp.py",
+      "line": 1,
+      "severity": "medium",
+      "issue": "Public module has no docstring",
+      "evidence": "from flask import Blueprint, render_template",
+      "fix": "Add a module-level docstring describing the blueprint",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-10",
+      "file": "good/mod_csp.py",
+      "line": 1,
+      "severity": "medium",
+      "issue": "Public module has no docstring",
+      "evidence": "from flask import Blueprint, render_template",
+      "fix": "Add a module-level docstring describing the blueprint",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-11",
+      "file": "bad/mod_mfa.py",
+      "line": 54,
+      "severity": "medium",
+      "issue": "Unreachable code after return statements",
+      "evidence": "    return render_template('mfa.enable.html')",
+      "fix": "Remove the unreachable return statement",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-12",
+      "file": "good/libuser.py",
+      "line": 46,
+      "severity": "low",
+      "issue": "Local variable e is assigned to but never used in except clause",
+      "evidence": "    except Exception as e:",
+      "fix": "Remove the variable binding `as e` if it is not used.",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-13",
+      "file": "utils/hashfile.py",
+      "line": 1,
+      "severity": "low",
+      "issue": "Public module has no docstring",
+      "evidence": "#!/usr/bin/env python3",
+      "fix": "Add a module-level docstring explaining the script usage",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-14",
+      "file": "utils/crack-hash.py",
+      "line": 1,
+      "severity": "low",
+      "issue": "Public module has no docstring",
+      "evidence": "#!/usr/bin/env python3",
+      "fix": "Add a module-level docstring explaining the script usage",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-15",
+      "file": "utils/hmac_generate.py",
+      "line": 1,
+      "severity": "low",
+      "issue": "Public module has no docstring",
+      "evidence": "#!/usr/bin/env python3",
+      "fix": "Add a module-level docstring explaining the script usage",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-16",
+      "file": "utils/fernet-generate-key.py",
+      "line": 1,
+      "severity": "low",
+      "issue": "Public module has no docstring",
+      "evidence": "#!/usr/bin/env python3",
+      "fix": "Add a module-level docstring explaining the script usage",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "SEC-1",
+    "SEC-2",
+    "SEC-3",
+    "SEC-4",
+    "SEC-5",
+    "SEC-6",
+    "SEC-7",
+    "QUAL-1",
+    "QUAL-2",
+    "QUAL-3",
+    "QUAL-4",
+    "QUAL-5",
+    "QUAL-6",
+    "QUAL-7",
+    "QUAL-8",
+    "QUAL-9",
+    "QUAL-10",
+    "QUAL-11",
+    "QUAL-12",
+    "QUAL-13",
+    "QUAL-14",
+    "QUAL-15",
+    "QUAL-16"
+  ],
+  "rejected": [],
+  "architecture": {
+    "summary": "Vulpy is a web application security lab built with Python, Flask, and SQLite designed to teach secure coding practices. It comes in two versions: a vulnerable implementation ('bad') and a more secure implementation ('good') following best practices. Additionally, the repository includes various utility scripts for cryptographic operations and security testing.",
+    "modules": [
+      {
+        "name": "vulpy.py",
+        "purpose": "Main entry point and application initialization for the web service."
+      },
+      {
+        "name": "libuser.py",
+        "purpose": "Handles user management, authentication, and database queries for users."
+      },
+      {
+        "name": "libapi.py",
+        "purpose": "Manages API key generation, authentication, and token validation."
+      },
+      {
+        "name": "libposts.py",
+        "purpose": "Manages post creation and retrieval for users."
+      },
+      {
+        "name": "libsession.py",
+        "purpose": "Handles session creation and state management."
+      },
+      {
+        "name": "libmfa.py",
+        "purpose": "Manages Multi-Factor Authentication (MFA) secrets and verification."
+      },
+      {
+        "name": "mod_api.py",
+        "purpose": "Blueprint defining API endpoints for posts and keys."
+      },
+      {
+        "name": "mod_user.py",
+        "purpose": "Blueprint defining user authentication, registration, and password change routes."
+      },
+      {
+        "name": "mod_mfa.py",
+        "purpose": "Blueprint handling MFA setup and configuration routes."
+      },
+      {
+        "name": "db_init.py",
+        "purpose": "Initializes SQLite databases and creates initial user records."
+      }
+    ],
+    "entry_points": [
+      "bad/vulpy.py",
+      "good/vulpy.py",
+      "bad/db_init.py",
+      "good/db_init.py"
+    ],
+    "dependencies": [
+      "click",
+      "cryptography",
+      "Flask",
+      "geoip2",
+      "jsonschema",
+      "PyJWT",
+      "pyotp",
+      "qrcode",
+      "requests"
+    ]
+  },
+  "score": {
+    "score": 0,
+    "per_kloc": 9.47,
+    "counts": {
+      "high": 6,
+      "medium": 12,
+      "low": 5
+    }
+  },
+  "stats": {
+    "seconds": 259.8,
+    "llm_calls": 28,
+    "llm_errors": 1,
+    "llm_seconds": 162.3,
+    "verifier_seconds": 95.3,
+    "verifier_calls": 16
+  },
+  "warnings": []
+}

@@ -1,0 +1,191 @@
+{
+  "run_id": "774ed4d6ebfd",
+  "repo": "sloria/environs",
+  "commit": "d65f5d16155f6653569f8319b458484ff27be297",
+  "pipeline_version": "4",
+  "model": "gemini-3.8-flash",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "env",
+      "ini",
+      "json",
+      "py",
+      "toml",
+      "yaml",
+      "yml"
+    ],
+    "assignments": {
+      "architect": [
+        "README.md",
+        "pyproject.toml",
+        "src/environs/__init__.py",
+        "src/environs/fields.py",
+        "src/environs/types.py",
+        "examples/plugin_example.py",
+        "examples/django_example.py",
+        "examples/simple_example.py",
+        "src/environs/exceptions.py",
+        "examples/validation_example.py",
+        "examples/deferred_validation_example.py",
+        "examples/marshmallow_example.py"
+      ],
+      "security": [
+        "src/environs/__init__.py",
+        "src/environs/fields.py",
+        "src/environs/types.py",
+        ".pre-commit-config.yaml",
+        "examples/plugin_example.py",
+        "pyproject.toml",
+        ".github/workflows/build-release.yml",
+        "examples/django_example.py",
+        "examples/simple_example.py",
+        "src/environs/exceptions.py",
+        "tox.ini",
+        "examples/validation_example.py",
+        "examples/deferred_validation_example.py",
+        "examples/marshmallow_example.py",
+        "examples/prefix_example.py",
+        "examples/fileaware_example.py",
+        "renovate.json"
+      ],
+      "quality": [
+        "src/environs/__init__.py",
+        "src/environs/fields.py",
+        "src/environs/types.py",
+        "examples/plugin_example.py",
+        "examples/django_example.py",
+        "examples/simple_example.py",
+        "src/environs/exceptions.py",
+        "examples/validation_example.py",
+        "examples/deferred_validation_example.py",
+        "examples/marshmallow_example.py",
+        "examples/prefix_example.py",
+        "examples/fileaware_example.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": [
+        "src/environs/__init__.py"
+      ]
+    }
+  },
+  "tool_hits": 8,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "QUAL-1",
+      "file": "src/environs/__init__.py",
+      "line": 472,
+      "severity": "medium",
+      "issue": "Code placed after context manager yield and finally block will not execute properly or is unreachable in context manager",
+      "evidence": "        finally:\n            # explicitly reset the stored prefix on completion and exceptions\n            self._prefix = None\n        self._prefix = old_prefix",
+      "fix": "Move self._prefix = old_prefix inside the finally block or handle it correctly.",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-2",
+      "file": "src/environs/fields.py",
+      "line": 95,
+      "severity": "medium",
+      "issue": "Function _deserialize is too complex and deeply nested",
+      "evidence": "    def _deserialize(self, value, *args, **kwargs) -> timedelta:",
+      "fix": "Break down parsing logic into helper methods for GEP-2257 and ISO 8601",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-3",
+      "file": "src/environs/__init__.py",
+      "line": 44,
+      "severity": "low",
+      "issue": "Use contextlib.suppress(ImportError) instead of try-except-pass",
+      "evidence": "    try:\n        from dj_database_url import DBConfig\n    except ImportError:\n        pass",
+      "fix": "Use contextlib.suppress(ImportError)",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-4",
+      "file": "src/environs/__init__.py",
+      "line": 589,
+      "severity": "low",
+      "issue": "Use ternary operator instead of if-else-block",
+      "evidence": "            if env_default is None:  # noqa: SIM108\n                env_default = Ellipsis\n            else:\n                env_default = env_default[2:]",
+      "fix": "env_default = Ellipsis if env_default is None else env_default[2:]",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "QUAL-1",
+    "QUAL-2"
+  ],
+  "rejected": [
+    {
+      "id": "QUAL-3",
+      "stage": "llm",
+      "reason": "Using try-except-pass is valid and standard Python, while contextlib.suppress is a stylistic preference rather than a bug."
+    },
+    {
+      "id": "QUAL-4",
+      "stage": "llm",
+      "reason": "Using an if-else block is completely valid and readable; a ternary operator is purely stylistic."
+    }
+  ],
+  "architecture": {
+    "summary": "Environs is a Python library for simplified environment variable parsing that supports type-casting, reading .env files, validation, and integration with web frameworks like Django and Flask.",
+    "modules": [
+      {
+        "name": "environs.__init__",
+        "purpose": "Main package initialization defining the core Env and FileAwareEnv classes for parsing environment variables."
+      },
+      {
+        "name": "environs.fields",
+        "purpose": "Custom marshmallow fields and parsers for environment variable types such as Path, LogLevel, and TimeDelta."
+      },
+      {
+        "name": "environs.exceptions",
+        "purpose": "Defines custom exceptions used throughout the library like EnvError, EnvNotSetError, and EnvValidationError."
+      },
+      {
+        "name": "environs.types",
+        "purpose": "Contains internal type aliases and protocol definitions used for static typing support."
+      }
+    ],
+    "entry_points": [],
+    "dependencies": [
+      "python-dotenv",
+      "marshmallow",
+      "typing-extensions",
+      "dj-database-url",
+      "dj-email-url",
+      "django-cache-url",
+      "pytest",
+      "mypy"
+    ]
+  },
+  "score": {
+    "score": 92,
+    "per_kloc": 0.72,
+    "counts": {
+      "high": 0,
+      "medium": 2,
+      "low": 0
+    }
+  },
+  "stats": {
+    "seconds": 54.1,
+    "llm_calls": 9,
+    "llm_errors": 0,
+    "llm_seconds": 12.2,
+    "verifier_seconds": 12.0,
+    "verifier_calls": 2
+  },
+  "warnings": [
+    "1 large files were only partly reviewed (truncated): src/environs/__init__.py"
+  ]
+}

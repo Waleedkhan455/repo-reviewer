@@ -1,0 +1,197 @@
+{
+  "run_id": "b8815f716956",
+  "repo": "stamparm/dsvw",
+  "commit": "9ca3c9acf3defa0a6148d40e5f5cebeb5dcbb908",
+  "pipeline_version": "4",
+  "model": "gemini-3.8-flash",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "py",
+      "yml"
+    ],
+    "assignments": {
+      "architect": [
+        "README.md",
+        "Dockerfile",
+        "requirements.txt",
+        "dsvw.py"
+      ],
+      "security": [
+        "dsvw.py",
+        ".github/workflows/tests.yml",
+        "Dockerfile",
+        "docker-compose.yml"
+      ],
+      "quality": [
+        "dsvw.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": []
+    }
+  },
+  "tool_hits": 46,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "SEC-1",
+      "file": "dsvw.py",
+      "line": 22,
+      "severity": "high",
+      "issue": "SQL query built with string formatting/concatenation",
+      "evidence": "                    cursor.execute(\"SELECT id, username, name, surname FROM users WHERE id=\" + params[\"id\"])",
+      "fix": "Use parameterized queries, e.g., cursor.execute(\"SELECT id, username, name, surname FROM users WHERE id=?\", (params[\"id\"],))",
+      "source": "security"
+    },
+    {
+      "id": "SEC-2",
+      "file": "dsvw.py",
+      "line": 27,
+      "severity": "high",
+      "issue": "Unsafe deserialization using pickle on untrusted user input",
+      "evidence": "                    content = str(pickle.loads(urllib.parse.unquote_to_bytes(re.search(r\"(?:\\A|[?&])object=([^&]+)\", query).group(1))))",
+      "fix": "Avoid using pickle for untrusted input; use safer serialization formats such as JSON.",
+      "source": "security"
+    },
+    {
+      "id": "SEC-3",
+      "file": "dsvw.py",
+      "line": 31,
+      "severity": "high",
+      "issue": "Command injection via subprocess with shell=True",
+      "evidence": "                    content = subprocess.run(\"nslookup \" + params[\"domain\"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE, text=True, errors=\"replace\").stdout",
+      "fix": "Avoid shell=True and pass arguments as a list to subprocess.run.",
+      "source": "security"
+    },
+    {
+      "id": "SEC-4",
+      "file": "dsvw.py",
+      "line": 42,
+      "severity": "high",
+      "issue": "SQL injection via string formatting",
+      "evidence": "                        cursor.execute(\"INSERT INTO comments VALUES(NULL, '%s', '%s')\" % (params[\"comment\"], time.ctime()))",
+      "fix": "Use parameterized queries.",
+      "source": "security"
+    },
+    {
+      "id": "SEC-5",
+      "file": "dsvw.py",
+      "line": 49,
+      "severity": "high",
+      "issue": "Arbitrary code execution using exec() on user-controlled input",
+      "evidence": "                    try: exec(program, envs)",
+      "fix": "Remove or securely restrict the execution of dynamic code.",
+      "source": "security"
+    },
+    {
+      "id": "SEC-6",
+      "file": "dsvw.py",
+      "line": 61,
+      "severity": "high",
+      "issue": "SQL query built with string formatting",
+      "evidence": "                found = bool(cursor.execute(\"SELECT * FROM users WHERE username='\" + re.sub(r\"[^\\w]\", \"\", params.get(\"username\", \"\")) + \"' AND password='\" + params.get(\"password\", \"\") + \"'\").fetchall())",
+      "fix": "Use parameterized queries.",
+      "source": "security"
+    },
+    {
+      "id": "QUAL-1",
+      "file": "dsvw.py",
+      "line": 29,
+      "severity": "medium",
+      "issue": "Files opened without a context manager risk leaking file descriptors",
+      "evidence": "                elif \"path\" in params:\n                    content = (open(os.path.abspath(params[\"path\"]), \"rb\") if not \"://\" in params[\"path\"] else FETCH(params[\"path\"])).read().decode(errors=\"replace\")",
+      "fix": "Use a context manager or with-statement for file handling",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-2",
+      "file": "dsvw.py",
+      "line": 48,
+      "severity": "medium",
+      "issue": "Files opened without a context manager risk leaking file descriptors",
+      "evidence": "                elif \"include\" in params:\n                    program, output, envs = (open(params[\"include\"], \"rb\") if not \"://\" in params[\"include\"] else FETCH(params[\"include\"])).read(), io.StringIO(), {\"DOCUMENT_ROOT\": os.getcwd(), \"HTTP_USER_AGENT\": self.headers.get(\"User-Agent\"), \"REMOTE_ADDR\": self.client_address[0], \"REMOTE_PORT\": self.client_address[1], \"PATH\": path, \"QUERY_STRING\": query, \"__name__\": \"__main__\", \"print\": lambda *args, **kwargs: output.write(\"%s%s\" % (kwargs.get(\"sep\", \" \").join(str(_) for _ in args), kwargs.get(\"end\", \"\\n\")))}",
+      "fix": "Use a context manager to open files safely",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-3",
+      "file": "dsvw.py",
+      "line": 55,
+      "severity": "medium",
+      "issue": "File opened without a context manager",
+      "evidence": "                elif \"tmpl\" in params:\n                    content += \"<div><span>Result:</span></div>%s%s\" % (params[\"tmpl\"].format(open(__file__), os), HTML_POSTFIX)",
+      "fix": "Open the file inside a context manager before formatting",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "SEC-1",
+    "SEC-2",
+    "SEC-3",
+    "SEC-4",
+    "SEC-5",
+    "QUAL-1",
+    "QUAL-2",
+    "QUAL-3"
+  ],
+  "rejected": [
+    {
+      "id": "SEC-6",
+      "stage": "llm",
+      "reason": "The SQL query string uses regex sanitization via re.sub to strip non-word characters from the username parameter."
+    }
+  ],
+  "architecture": {
+    "summary": "Damn Small Vulnerable Web (DSVW) is a deliberately vulnerable web application written in under 100 lines of Python code for educational and testing purposes. It supports a wide range of common web application vulnerabilities and attacks, and includes a comprehensive local regression and test suite.",
+    "modules": [
+      {
+        "name": "dsvw.py",
+        "purpose": "Main server script implementing the vulnerable web application logic in under 100 lines of code."
+      },
+      {
+        "name": "tests/harness.py",
+        "purpose": "Test harness used for running automated regression and exploitability tests against the DSVW server."
+      },
+      {
+        "name": "tests/test_cases.py",
+        "purpose": "Defines specific attack vectors and test cases corresponding to the vulnerabilities present in DSVW."
+      },
+      {
+        "name": "tests/fixture.py",
+        "purpose": "Provides local HTTP fixtures to enable self-contained testing without requiring internet access."
+      }
+    ],
+    "entry_points": [
+      "python3 dsvw.py",
+      "python -m unittest discover -s tests -t tests -v"
+    ],
+    "dependencies": [
+      "lxml"
+    ]
+  },
+  "score": {
+    "score": 38,
+    "per_kloc": 6.3,
+    "counts": {
+      "high": 5,
+      "medium": 3,
+      "low": 0
+    }
+  },
+  "stats": {
+    "seconds": 78.7,
+    "llm_calls": 13,
+    "llm_errors": 6,
+    "llm_seconds": 43.0,
+    "verifier_seconds": 15.3,
+    "verifier_calls": 2
+  },
+  "warnings": []
+}

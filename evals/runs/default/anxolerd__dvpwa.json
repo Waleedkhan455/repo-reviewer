@@ -1,0 +1,229 @@
+{
+  "run_id": "e3999ed3adfd",
+  "repo": "anxolerd/dvpwa",
+  "commit": "a1d8f89fac2e57093189853c6527c2b01fc1d9c1",
+  "pipeline_version": "4",
+  "model": "gemini-3.8-flash",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "py",
+      "sh",
+      "yaml",
+      "yml"
+    ],
+    "assignments": {
+      "architect": [
+        "README.rst",
+        "requirements.txt",
+        "sqli/views.py",
+        "sqli/app.py",
+        "sqli/utils/auth.py",
+        "sqli/middlewares.py",
+        "sqli/dao/student.py",
+        "sqli/dao/user.py",
+        "sqli/dao/review.py",
+        "sqli/schema/config.py",
+        "run.py",
+        "sqli/schema/forms.py"
+      ],
+      "security": [
+        "sqli/views.py",
+        "sqli/app.py",
+        "sqli/utils/auth.py",
+        "sqli/middlewares.py",
+        "sqli/dao/student.py",
+        "sqli/dao/user.py",
+        "sqli/dao/review.py",
+        "sqli/schema/config.py",
+        "run.py",
+        "sqli/schema/forms.py",
+        "sqli/dao/course.py",
+        "sqli/routes.py",
+        "sqli/dao/mark.py",
+        "sqli/services/db.py",
+        "sqli/services/redis.py",
+        "sqli/utils/jinja2.py",
+        "config/dev.yaml",
+        "docker-compose.yml",
+        "recreate.sh"
+      ],
+      "quality": [
+        "sqli/views.py",
+        "sqli/app.py",
+        "sqli/utils/auth.py",
+        "sqli/middlewares.py",
+        "sqli/dao/student.py",
+        "sqli/dao/user.py",
+        "sqli/dao/review.py",
+        "sqli/schema/config.py",
+        "run.py",
+        "sqli/schema/forms.py",
+        "sqli/dao/course.py",
+        "sqli/routes.py",
+        "sqli/dao/mark.py",
+        "sqli/services/db.py",
+        "sqli/services/redis.py",
+        "sqli/utils/jinja2.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": []
+    }
+  },
+  "tool_hits": 15,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "SEC-1",
+      "file": "sqli/dao/student.py",
+      "line": 42,
+      "severity": "high",
+      "issue": "SQL query built with string formatting/concatenation",
+      "evidence": "q = (\"INSERT INTO students (name) \"",
+      "fix": "Use parameterized queries",
+      "source": "security"
+    },
+    {
+      "id": "QUAL-1",
+      "file": "sqli/views.py",
+      "line": 24,
+      "severity": "medium",
+      "issue": "Undefined name Application used for type annotation",
+      "evidence": "    app: Application = request.app",
+      "fix": "Import Application from aiohttp.web or remove the type annotation",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-2",
+      "file": "sqli/dao/student.py",
+      "line": 41,
+      "severity": "medium",
+      "issue": "Manual string formatting for SQL query construction, prone to errors",
+      "evidence": "    @staticmethod\n    async def create(conn: Connection, name: str):\n        q = (\"INSERT INTO students (name) \"\n             \"VALUES ('%(name)s)' % {'name': name})",
+      "fix": "Use parameterized queries with aiopg cursor execute instead of string formatting",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-3",
+      "file": "sqli/dao/course.py",
+      "line": 37,
+      "severity": "medium",
+      "issue": "Incorrect parameter passing to cursor.execute (kwargs instead of args/dict)",
+      "evidence": "            await cur.execute(q, **params)",
+      "fix": "Pass params as a dictionary or tuple to cursor.execute",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-4",
+      "file": "sqli/middlewares.py",
+      "line": 4,
+      "severity": "low",
+      "issue": "Imported HTTPInternalServerError is unused",
+      "evidence": "from aiohttp.web_exceptions import HTTPForbidden, HTTPInternalServerError",
+      "fix": "Remove unused HTTPInternalServerError import",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "SEC-1",
+    "QUAL-1",
+    "QUAL-4"
+  ],
+  "rejected": [
+    {
+      "id": "QUAL-2",
+      "stage": "precheck",
+      "reason": "evidence snippet not found near the cited line"
+    },
+    {
+      "id": "QUAL-3",
+      "stage": "llm",
+      "reason": "PyMySQL / aiomysql cursors accept dictionary parameters as keyword arguments via **params."
+    }
+  ],
+  "architecture": {
+    "summary": "DVPWA (Damn Vulnerable Python Web Application) is an intentionally vulnerable web application built using Python, aiohttp, and PostgreSQL. It serves as a training and demonstration tool for exploring common web security vulnerabilities like SQL injection and session fixation. The backend relies on asynchronous libraries such as aiopg and aioredis, with Jinja2 rendering templates for the front end.",
+    "modules": [
+      {
+        "name": "sqli.app",
+        "purpose": "Initializes the aiohttp web application, configures middlewares, routes, database, and templates."
+      },
+      {
+        "name": "sqli.views",
+        "purpose": "Defines request handlers and view logic for rendering pages and processing forms."
+      },
+      {
+        "name": "sqli.middlewares",
+        "purpose": "Implements session management, error handling, and optional CSRF protection."
+      },
+      {
+        "name": "sqli.dao.student",
+        "purpose": "Data access object for managing student records in the PostgreSQL database."
+      },
+      {
+        "name": "sqli.dao.user",
+        "purpose": "Data access object handling user authentication and retrieval."
+      },
+      {
+        "name": "sqli.dao.review",
+        "purpose": "Data access object for course reviews."
+      },
+      {
+        "name": "sqli.dao.course",
+        "purpose": "Data access object for course data."
+      },
+      {
+        "name": "sqli.dao.mark",
+        "purpose": "Data access object for student marks/grades."
+      },
+      {
+        "name": "sqli.utils.auth",
+        "purpose": "Provides authentication utilities and decorators for restricting access."
+      },
+      {
+        "name": "sqli.schema.config",
+        "purpose": "Defines configuration schemas validated using trafaret."
+      }
+    ],
+    "entry_points": [
+      "run.py"
+    ],
+    "dependencies": [
+      "aiohttp",
+      "aiohttp-jinja2",
+      "aiohttp-session",
+      "aiopg",
+      "aioredis",
+      "jinja2",
+      "psycopg2",
+      "pyyaml",
+      "trafaret",
+      "trafaret-config"
+    ]
+  },
+  "score": {
+    "score": 85,
+    "per_kloc": 3.0,
+    "counts": {
+      "high": 1,
+      "medium": 1,
+      "low": 1
+    }
+  },
+  "stats": {
+    "seconds": 60.3,
+    "llm_calls": 10,
+    "llm_errors": 0,
+    "llm_seconds": 29.9,
+    "verifier_seconds": 28.8,
+    "verifier_calls": 4
+  },
+  "warnings": []
+}

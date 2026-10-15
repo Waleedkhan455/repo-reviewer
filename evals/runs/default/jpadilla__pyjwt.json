@@ -1,0 +1,233 @@
+{
+  "run_id": "373951501aee",
+  "repo": "jpadilla/pyjwt",
+  "commit": "16231abfd1d8eab4953e8779b3017b859c88565e",
+  "pipeline_version": "4",
+  "model": "gemini-3.8-flash",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "ini",
+      "json",
+      "py",
+      "toml",
+      "yaml",
+      "yml"
+    ],
+    "assignments": {
+      "architect": [
+        "README.rst",
+        "pyproject.toml",
+        "jwt/api_jws.py",
+        "jwt/api_jwt.py",
+        "jwt/algorithms.py",
+        "jwt/api_jwk.py",
+        "jwt/jwks_client.py",
+        "docs/conf.py",
+        "jwt/utils.py",
+        "jwt/types.py",
+        "jwt/exceptions.py",
+        "jwt/__init__.py"
+      ],
+      "security": [
+        "jwt/api_jws.py",
+        "jwt/api_jwt.py",
+        "jwt/algorithms.py",
+        "jwt/api_jwk.py",
+        "jwt/jwks_client.py",
+        ".pre-commit-config.yaml",
+        "docs/conf.py",
+        "jwt/utils.py",
+        ".github/workflows/main.yml",
+        "jwt/types.py",
+        "pyproject.toml",
+        "jwt/exceptions.py",
+        "tox.ini",
+        "ruff.toml",
+        "jwt/__init__.py",
+        "jwt/help.py",
+        ".github/workflows/pypi-package.yml",
+        "jwt/jwk_set_cache.py",
+        ".oss-scanner/Dockerfile",
+        ".github/workflows/stale.yml",
+        ".github/workflows/enforce-changelog-entry.yml",
+        "jwt/warnings.py",
+        ".readthedocs.yaml",
+        "codecov.yml",
+        ".github/dependabot.yml",
+        ".github/FUNDING.yml"
+      ],
+      "quality": [
+        "jwt/api_jws.py",
+        "jwt/api_jwt.py",
+        "jwt/algorithms.py",
+        "jwt/api_jwk.py",
+        "jwt/jwks_client.py",
+        "docs/conf.py",
+        "jwt/utils.py",
+        "jwt/types.py",
+        "jwt/exceptions.py",
+        "jwt/__init__.py",
+        "jwt/help.py",
+        "jwt/jwk_set_cache.py",
+        "jwt/warnings.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": [
+        "jwt/api_jwt.py",
+        "jwt/algorithms.py"
+      ]
+    }
+  },
+  "tool_hits": 240,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "QUAL-1",
+      "file": "jwt/api_jws.py",
+      "line": 123,
+      "severity": "medium",
+      "issue": "Function `encode` is too complex, long, and has excessive branching/statements.",
+      "evidence": "    def encode(",
+      "fix": "Refactor into smaller helper methods for header preparation, payload handling, and signing.",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-2",
+      "file": "jwt/api_jwk.py",
+      "line": 20,
+      "severity": "medium",
+      "issue": "Function __init__ has too many branches and high cyclomatic complexity",
+      "evidence": "    def __init__(self, jwk_data: JWKDict, algorithm: str | None = None) -> None:",
+      "fix": "Extract key type and curve algorithm determination into separate helper methods",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-3",
+      "file": "jwt/jwks_client.py",
+      "line": 35,
+      "severity": "medium",
+      "issue": "Function __init__ has too many arguments (9)",
+      "evidence": "    def __init__(\n        self,\n        uri: str,",
+      "fix": "Group configuration options into a dataclass or configuration object",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-4",
+      "file": "jwt/api_jws.py",
+      "line": 397,
+      "severity": "low",
+      "issue": "Function `_verify_signature` has too many arguments and branches.",
+      "evidence": "    def _verify_signature(",
+      "fix": "Simplify or split validation logic into separate helper methods.",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-5",
+      "file": "jwt/api_jwt.py",
+      "line": 452,
+      "severity": "low",
+      "issue": "Use a single if statement instead of nested if statements",
+      "evidence": "        if subject is not None:\n            if payload.get(\"sub\") != subject:\n                raise InvalidSubjectError(\"Invalid subject\")",
+      "fix": "Combine into 'if subject is not None and payload.get(\"sub\") != subject:'",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-6",
+      "file": "jwt/algorithms.py",
+      "line": 402,
+      "severity": "low",
+      "issue": "Swallowed exception using try-except-pass block",
+      "evidence": "                    try:\n                        has_jwk_member = (\n                            json.loads(decoded_key[index : end + 1]) == \"kty\"\n                        )\n                    except ValueError:\n                        pass",
+      "fix": "Use contextlib.suppress(ValueError) or handle the exception appropriately",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "QUAL-1",
+    "QUAL-3",
+    "QUAL-4",
+    "QUAL-5",
+    "QUAL-6"
+  ],
+  "rejected": [
+    {
+      "id": "QUAL-2",
+      "stage": "llm",
+      "reason": "The function definition at line 20 shows a simple initialization with only one basic check, not high cyclomatic complexity."
+    }
+  ],
+  "architecture": {
+    "summary": "PyJWT is a Python implementation of RFC 7519, enabling developers to encode and decode JSON Web Tokens (JWTs). It supports multiple cryptographic algorithms, JSON Web Keys (JWKs), and JWKS client retrieval with caching.",
+    "modules": [
+      {
+        "name": "jwt.api_jwt",
+        "purpose": "Provides the high-level PyJWT interface for encoding, decoding, and validating JSON Web Tokens."
+      },
+      {
+        "name": "jwt.api_jws",
+        "purpose": "Implements JSON Web Signature (JWS) operations for signing and verifying token payloads."
+      },
+      {
+        "name": "jwt.api_jwk",
+        "purpose": "Handles JSON Web Keys (JWKs) and JWK Sets for cryptographic key management."
+      },
+      {
+        "name": "jwt.algorithms",
+        "purpose": "Implements various signing and hashing algorithms such as HMAC, RSA, ECDSA, and EdDSA using the cryptography library."
+      },
+      {
+        "name": "jwt.jwks_client",
+        "purpose": "Provides a client to fetch and cache signing keys from a remote JWKS endpoint."
+      },
+      {
+        "name": "jwt.exceptions",
+        "purpose": "Defines custom exceptions for decoding, signature verification, and validation failures."
+      },
+      {
+        "name": "jwt.utils",
+        "purpose": "Contains helper utility functions for base64url encoding/decoding and signature conversions."
+      },
+      {
+        "name": "jwt.jwk_set_cache",
+        "purpose": "Manages caching layers for JWK sets to prevent redundant network requests."
+      }
+    ],
+    "entry_points": [],
+    "dependencies": [
+      "cryptography",
+      "typing_extensions",
+      "pytest",
+      "coverage",
+      "sphinx",
+      "sphinx-rtd-theme"
+    ]
+  },
+  "score": {
+    "score": 89,
+    "per_kloc": 0.53,
+    "counts": {
+      "high": 0,
+      "medium": 2,
+      "low": 3
+    }
+  },
+  "stats": {
+    "seconds": 108.8,
+    "llm_calls": 18,
+    "llm_errors": 0,
+    "llm_seconds": 33.9,
+    "verifier_seconds": 25.0,
+    "verifier_calls": 5
+  },
+  "warnings": [
+    "2 large files were only partly reviewed (truncated): jwt/api_jwt.py, jwt/algorithms.py"
+  ]
+}

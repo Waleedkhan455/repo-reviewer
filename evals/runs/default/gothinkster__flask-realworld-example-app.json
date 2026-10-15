@@ -1,0 +1,233 @@
+{
+  "run_id": "1e3d55191dfe",
+  "repo": "gothinkster/flask-realworld-example-app",
+  "commit": "4b95fb2227dfeb5dd1a45d89b2bf48630b93fd28",
+  "pipeline_version": "4",
+  "model": "gemini-3.8-flash",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "cfg",
+      "py",
+      "yml"
+    ],
+    "assignments": {
+      "architect": [
+        "README.rst",
+        "requirements.txt",
+        "setup.cfg",
+        "conduit/articles/models.py",
+        "conduit/articles/serializers.py",
+        "conduit/compat.py",
+        "conduit/user/serializers.py",
+        "conduit/articles/views.py",
+        "conduit/app.py",
+        "conduit/user/views.py",
+        "conduit/user/__init__.py",
+        "conduit/commands.py"
+      ],
+      "security": [
+        "conduit/articles/models.py",
+        "conduit/articles/serializers.py",
+        "conduit/compat.py",
+        "conduit/user/serializers.py",
+        "conduit/articles/views.py",
+        "conduit/app.py",
+        "conduit/user/views.py",
+        "conduit/user/__init__.py",
+        "conduit/commands.py",
+        "conduit/settings.py",
+        "conduit/user/models.py",
+        "conduit/profile/views.py",
+        ".circleci/config.yml",
+        "conduit/exceptions.py",
+        "conduit/articles/__init__.py",
+        "conduit/profile/__init__.py",
+        "conduit/profile/models.py",
+        "conduit/extensions.py",
+        "conduit/database.py",
+        "conduit/profile/serializers.py",
+        ".travis.yml",
+        "autoapp.py",
+        "conduit/utils.py",
+        "conduit/__init__.py",
+        "setup.cfg"
+      ],
+      "quality": [
+        "conduit/articles/models.py",
+        "conduit/articles/serializers.py",
+        "conduit/compat.py",
+        "conduit/user/serializers.py",
+        "conduit/articles/views.py",
+        "conduit/app.py",
+        "conduit/user/views.py",
+        "conduit/user/__init__.py",
+        "conduit/commands.py",
+        "conduit/settings.py",
+        "conduit/user/models.py",
+        "conduit/profile/views.py",
+        "conduit/exceptions.py",
+        "conduit/articles/__init__.py",
+        "conduit/profile/__init__.py",
+        "conduit/profile/models.py",
+        "conduit/extensions.py",
+        "conduit/database.py",
+        "conduit/profile/serializers.py",
+        "autoapp.py",
+        "conduit/utils.py",
+        "conduit/__init__.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": []
+    }
+  },
+  "tool_hits": 42,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "QUAL-1",
+      "file": "conduit/compat.py",
+      "line": 8,
+      "severity": "high",
+      "issue": "Undefined name `unicode` in Python 3 compatibility block",
+      "evidence": "    text_type = unicode  # noqa",
+      "fix": "Remove or properly handle Python 2 compatibility names",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-2",
+      "file": "conduit/user/__init__.py",
+      "line": 3,
+      "severity": "medium",
+      "issue": "Unused import `views`",
+      "evidence": "from . import views  # noqa",
+      "fix": "Remove unused import or add to __all__",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-3",
+      "file": "conduit/commands.py",
+      "line": 70,
+      "severity": "medium",
+      "issue": "Function is very long and contains complex formatting and iteration logic",
+      "evidence": "def urls(url, order):",
+      "fix": "Extract table formatting and row generation into smaller helper functions",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-4",
+      "file": "conduit/user/views.py",
+      "line": 24,
+      "severity": "low",
+      "issue": "Exception raised without chaining or context preservation (raise ... from err)",
+      "evidence": "    except IntegrityError:\n        db.session.rollback()\n        raise InvalidUsage.user_already_registered()",
+      "fix": "Use raise InvalidUsage.user_already_registered() from err",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-5",
+      "file": "conduit/extensions.py",
+      "line": 46,
+      "severity": "low",
+      "issue": "Circular import avoidance via late import at the bottom of the module",
+      "evidence": "from conduit.utils import jwt_identity, identity_loader  # noqa",
+      "fix": "Reorganize imports or module structure to avoid late imports",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "QUAL-1",
+    "QUAL-4",
+    "QUAL-5"
+  ],
+  "rejected": [
+    {
+      "id": "QUAL-2",
+      "stage": "llm",
+      "reason": "The import has a '# noqa' comment suppressing linter warnings, often used for registrations or side effects in Django/Flask apps."
+    },
+    {
+      "id": "QUAL-3",
+      "stage": "llm",
+      "reason": "The function urls is short and straightforward, handling url rule mapping without excessive length or complexity."
+    }
+  ],
+  "architecture": {
+    "summary": "This is a Flask-based implementation of the RealWorld backend API specification (known as Conduit). It provides user authentication, profile management, article publishing, comments, and tagging functionality utilizing SQLAlchemy, Marshmallow, and JWT.",
+    "modules": [
+      {
+        "name": "conduit.app",
+        "purpose": "Application factory and configuration initialization."
+      },
+      {
+        "name": "conduit.database",
+        "purpose": "Base database models and utilities."
+      },
+      {
+        "name": "conduit.extensions",
+        "purpose": "Flask extension instances such as SQLAlchemy, Migrations, and JWT."
+      },
+      {
+        "name": "conduit.settings",
+        "purpose": "Configuration classes for production, development, and testing."
+      },
+      {
+        "name": "conduit.user",
+        "purpose": "User account management, authentication, and user views/models."
+      },
+      {
+        "name": "conduit.profile",
+        "purpose": "User profile models, serializers, and views."
+      },
+      {
+        "name": "conduit.articles",
+        "purpose": "Article management, comments, tags, and associated views/models."
+      },
+      {
+        "name": "conduit.commands",
+        "purpose": "Custom CLI commands for testing, linting, and maintenance."
+      }
+    ],
+    "entry_points": [
+      "autoapp.py",
+      "flask run"
+    ],
+    "dependencies": [
+      "Flask",
+      "Flask-SQLAlchemy",
+      "Flask-Migrate",
+      "Flask-JWT-Extended",
+      "Flask-Cors",
+      "Flask-Bcrypt",
+      "marshmallow",
+      "flask-apispec",
+      "psycopg2",
+      "pytest"
+    ]
+  },
+  "score": {
+    "score": 88,
+    "per_kloc": 1.8,
+    "counts": {
+      "high": 1,
+      "medium": 0,
+      "low": 2
+    }
+  },
+  "stats": {
+    "seconds": 65.8,
+    "llm_calls": 11,
+    "llm_errors": 0,
+    "llm_seconds": 14.1,
+    "verifier_seconds": 29.7,
+    "verifier_calls": 5
+  },
+  "warnings": []
+}

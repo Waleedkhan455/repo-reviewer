@@ -1,0 +1,157 @@
+{
+  "run_id": "3a0ee9f2fd2f",
+  "repo": "we45/vulnerable-flask-app",
+  "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+  "pipeline_version": "4",
+  "model": "gemini-3.8-flash",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "py",
+      "yml"
+    ],
+    "assignments": {
+      "architect": [
+        "README.md",
+        "Dockerfile",
+        "app/app.py"
+      ],
+      "security": [
+        "app/app.py",
+        ".github/workflows/zap_test.yml",
+        "old-workflows/semgrep.yml",
+        "Dockerfile"
+      ],
+      "quality": [
+        "app/app.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": []
+    }
+  },
+  "tool_hits": 27,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "SEC-1",
+      "file": "app/app.py",
+      "line": 261,
+      "severity": "high",
+      "issue": "SQL query built with string concatenation leading to SQL injection",
+      "evidence": "str_query = \"SELECT first_name, last_name, username FROM customer WHERE username = '%s';\" % search_term",
+      "fix": "Use parameterized queries or SQLAlchemy ORM filters",
+      "source": "security"
+    },
+    {
+      "id": "SEC-2",
+      "file": "app/app.py",
+      "line": 329,
+      "severity": "high",
+      "issue": "Unsafe YAML deserialization using yaml.load without a safe Loader",
+      "evidence": "ydata = yaml.load(y)",
+      "fix": "Use yaml.safe_load(y)",
+      "source": "security"
+    },
+    {
+      "id": "SEC-3",
+      "file": "app/app.py",
+      "line": 141,
+      "severity": "medium",
+      "issue": "Use of weak MD5 cryptographic hash function for security purposes",
+      "evidence": "hash_pass = hashlib.md5(password).hexdigest()",
+      "fix": "Use a secure hashing algorithm like bcrypt, scrypt, or argon2",
+      "source": "security"
+    },
+    {
+      "id": "QUAL-1",
+      "file": "app/app.py",
+      "line": 193,
+      "severity": "medium",
+      "issue": "Swallowed exception using a bare except clause",
+      "evidence": "    except:\n        return jsonify({'Error': 'Unable to recognize Input'}),404",
+      "fix": "Catch specific exceptions like (KeyError, TypeError) instead of a bare except",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-2",
+      "file": "app/app.py",
+      "line": 308,
+      "severity": "medium",
+      "issue": "Potential NameError or UnboundLocalError accessing 'para' outside the loop if the request method is not POST or paragraphs are empty",
+      "evidence": "    return render_template('view.html', name=para.text)",
+      "fix": "Ensure 'para' is defined or handle GET requests properly before using it in the template",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-3",
+      "file": "app/app.py",
+      "line": 290,
+      "severity": "low",
+      "issue": "Misleading function name 'hello' for an endpoint handling file uploads",
+      "evidence": "def hello():",
+      "fix": "Rename function to 'xxe_uploader' or 'upload_file'",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "SEC-1",
+    "SEC-2",
+    "SEC-3",
+    "QUAL-1",
+    "QUAL-2",
+    "QUAL-3"
+  ],
+  "rejected": [],
+  "architecture": {
+    "summary": "This is a vulnerable Flask web application designed for security testing and ZAP scanner validation. It includes database models, JWT handling, YAML parsing, and several HTML templates for testing views.",
+    "modules": [
+      {
+        "name": "app/app.py",
+        "purpose": "Main Flask application containing routes, database models, and security testing logic."
+      },
+      {
+        "name": "tests/e2e_zap.py",
+        "purpose": "End-to-end ZAP security test script."
+      }
+    ],
+    "entry_points": [
+      "app/app.py",
+      "python app.py"
+    ],
+    "dependencies": [
+      "flask",
+      "flask_sqlalchemy",
+      "jwt",
+      "faker",
+      "docx",
+      "yaml",
+      "tornado",
+      "werkzeug"
+    ]
+  },
+  "score": {
+    "score": 67,
+    "per_kloc": 6.0,
+    "counts": {
+      "high": 2,
+      "medium": 3,
+      "low": 1
+    }
+  },
+  "stats": {
+    "seconds": 29.8,
+    "llm_calls": 5,
+    "llm_errors": 0,
+    "llm_seconds": 7.0,
+    "verifier_seconds": 6.2,
+    "verifier_calls": 1
+  },
+  "warnings": []
+}

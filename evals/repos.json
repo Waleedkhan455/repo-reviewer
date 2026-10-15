@@ -1,0 +1,205 @@
+{
+  "_comment": "Each repo is pinned to a commit so every run reviews identical code. Fill in ground_truth BEFORE the first run (see LABELING_RULES.md). Repos with an empty ground_truth are excluded from recall.",
+  "repos": [
+    {
+      "url": "https://github.com/stamparm/DSVW",
+      "commit": "9ca3c9acf3defa0a6148d40e5f5cebeb5dcbb908",
+      "kind": "vulnerable",
+      "notes": "Damn Small Vulnerable Web: single-file app with documented SQLi, XSS, XXE, command injection, path traversal, etc.",
+      "ground_truth": [
+        {
+          "id": "GT-1",
+          "file": "dsvw.py",
+          "category": "security",
+          "description": "SQL injection through the id parameter (UNION / blind boolean / blind time)",
+          "source": "repo docs"
+        },
+        {
+          "id": "GT-2",
+          "file": "dsvw.py",
+          "category": "security",
+          "description": "Login bypass: SQL injection through the password parameter of /login",
+          "source": "repo docs"
+        },
+        {
+          "id": "GT-3",
+          "file": "dsvw.py",
+          "category": "security",
+          "description": "OS command injection through the domain parameter (nslookup with shell=True)",
+          "source": "repo docs"
+        },
+        {
+          "id": "GT-4",
+          "file": "dsvw.py",
+          "category": "security",
+          "description": "Insecure deserialization: pickle.loads on the object parameter",
+          "source": "repo docs"
+        },
+        {
+          "id": "GT-5",
+          "file": "dsvw.py",
+          "category": "security",
+          "description": "Path traversal / SSRF through the path parameter (open() or remote fetch of a user-supplied path)",
+          "source": "repo docs"
+        }
+      ]
+    },
+    {
+      "url": "https://github.com/we45/Vulnerable-Flask-App",
+      "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+      "kind": "vulnerable",
+      "notes": "Deliberately vulnerable Flask API (training app).",
+      "ground_truth": [
+        {
+          "id": "GT-1",
+          "file": "app/app.py",
+          "category": "security",
+          "description": "SQL injection: search term formatted into a raw SQL string and run with db.engine.execute",
+          "source": "code reading (draft, please confirm)"
+        },
+        {
+          "id": "GT-2",
+          "file": "app/app.py",
+          "category": "security",
+          "description": "Server-side template injection: request.url interpolated into render_template_string (404 handler)",
+          "source": "code reading (draft, please confirm)"
+        },
+        {
+          "id": "GT-3",
+          "file": "app/app.py",
+          "category": "security",
+          "description": "Unsafe YAML deserialization: yaml.load on an uploaded file without a safe Loader",
+          "source": "code reading (draft, please confirm)"
+        },
+        {
+          "id": "GT-4",
+          "file": "app/app.py",
+          "category": "security",
+          "description": "Hard-coded JWT signing secret ('secret')",
+          "source": "code reading (draft, please confirm)"
+        },
+        {
+          "id": "GT-5",
+          "file": "app/app.py",
+          "category": "security",
+          "description": "JWT decoded with verify=False (signature not checked)",
+          "source": "code reading (draft, please confirm)"
+        }
+      ]
+    },
+    {
+      "url": "https://github.com/anxolerd/dvpwa",
+      "commit": "a1d8f89fac2e57093189853c6527c2b01fc1d9c1",
+      "kind": "vulnerable",
+      "notes": "Damn Vulnerable Python Web App (aiohttp): SQLi, XSS, weak password hashing, session issues.",
+      "ground_truth": [
+        {
+          "id": "GT-1",
+          "file": "sqli/dao/student.py",
+          "category": "security",
+          "description": "SQL injection: student name formatted into an INSERT statement",
+          "source": "repo docs"
+        },
+        {
+          "id": "GT-2",
+          "file": "sqli/app.py",
+          "category": "security",
+          "description": "Stored XSS: Jinja2 environment created with autoescape=False",
+          "source": "repo docs"
+        },
+        {
+          "id": "GT-3",
+          "file": "sqli/dao/user.py",
+          "category": "security",
+          "description": "Passwords hashed with unsalted MD5",
+          "source": "repo docs"
+        },
+        {
+          "id": "GT-4",
+          "file": "sqli/views.py",
+          "category": "security",
+          "description": "Session fixation: session id not rotated on login (user_id written into the existing session)",
+          "source": "repo docs"
+        }
+      ]
+    },
+    {
+      "url": "https://github.com/fportantier/vulpy",
+      "commit": "5249cc8b05a1c37f6b2f757b1cf16a509c327122",
+      "kind": "vulnerable",
+      "notes": "Vulpy: a 'bad' and a 'good' version of the same Flask app. Ground truth should come from the bad/ directory.",
+      "ground_truth": [
+        {
+          "id": "GT-1",
+          "file": "bad/libuser.py",
+          "category": "security",
+          "description": "SQL injection / authentication bypass in login (username and password formatted into the query)",
+          "source": "repo docs"
+        },
+        {
+          "id": "GT-2",
+          "file": "bad/libuser.py",
+          "category": "security",
+          "description": "SQL injection in user creation and password change queries",
+          "source": "repo docs"
+        },
+        {
+          "id": "GT-3",
+          "file": "bad/libuser.py",
+          "category": "security",
+          "description": "Passwords stored in plain text",
+          "source": "code reading (draft, please confirm)"
+        },
+        {
+          "id": "GT-4",
+          "file": "bad/libsession.py",
+          "category": "security",
+          "description": "Session impersonation: session cookie is unsigned base64 JSON that the client can forge",
+          "source": "repo docs"
+        }
+      ]
+    },
+    {
+      "url": "https://github.com/pallets/itsdangerous",
+      "commit": "672971d66a2ef9f85151e53283113f33d642dabd",
+      "kind": "clean",
+      "notes": "Well-maintained signing library. Expect few or no real issues; useful for measuring false positives.",
+      "ground_truth": []
+    },
+    {
+      "url": "https://github.com/pallets/markupsafe",
+      "commit": "4e111271b1494995708a9e878a10829b5e10c7ba",
+      "kind": "clean",
+      "notes": "Small, mature escaping library. False-positive check.",
+      "ground_truth": []
+    },
+    {
+      "url": "https://github.com/jpadilla/pyjwt",
+      "commit": "16231abfd1d8eab4953e8779b3017b859c88565e",
+      "kind": "clean",
+      "notes": "Security-sensitive library (JWT). Tests whether the reviewer flags safe crypto code as unsafe.",
+      "ground_truth": []
+    },
+    {
+      "url": "https://github.com/miguelgrinberg/microblog",
+      "commit": "a975ef64864354867c88e0ed3a17ba7d17dca752",
+      "kind": "app",
+      "notes": "Tutorial Flask app: realistic small web app.",
+      "ground_truth": []
+    },
+    {
+      "url": "https://github.com/gothinkster/flask-realworld-example-app",
+      "commit": "4b95fb2227dfeb5dd1a45d89b2bf48630b93fd28",
+      "kind": "app",
+      "notes": "Archived RealWorld Flask backend: realistic, unmaintained code.",
+      "ground_truth": []
+    },
+    {
+      "url": "https://github.com/sloria/environs",
+      "commit": "d65f5d16155f6653569f8319b458484ff27be297",
+      "kind": "clean",
+      "notes": "Small config library.",
+      "ground_truth": []
+    }
+  ]
+}

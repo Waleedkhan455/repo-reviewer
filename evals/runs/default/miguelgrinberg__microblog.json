@@ -1,0 +1,360 @@
+{
+  "run_id": "82eb85320ee7",
+  "repo": "miguelgrinberg/microblog",
+  "commit": "a975ef64864354867c88e0ed3a17ba7d17dca752",
+  "pipeline_version": "4",
+  "model": "gemini-3.8-flash",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "cfg",
+      "conf",
+      "ini",
+      "py",
+      "sh"
+    ],
+    "assignments": {
+      "architect": [
+        "README.md",
+        "Dockerfile",
+        "requirements.txt",
+        "app/cli.py",
+        "app/api/__init__.py",
+        "app/models.py",
+        "app/auth/__init__.py",
+        "app/main/routes.py",
+        "app/auth/routes.py",
+        "app/api/users.py",
+        "app/auth/forms.py",
+        "migrations/versions/e517276bb1c2_users_table.py"
+      ],
+      "security": [
+        "app/cli.py",
+        "app/api/__init__.py",
+        "app/models.py",
+        "app/auth/__init__.py",
+        "app/main/routes.py",
+        "app/auth/routes.py",
+        "app/api/users.py",
+        "app/auth/forms.py",
+        "migrations/versions/e517276bb1c2_users_table.py",
+        "config.py",
+        "migrations/versions/37f06a334dbf_new_fields_in_user_model.py",
+        "migrations/versions/834b1a697901_user_tokens.py",
+        "app/api/auth.py",
+        "app/auth/email.py",
+        "app/api/errors.py",
+        "app/api/tokens.py",
+        "app/__init__.py",
+        "app/tasks.py",
+        "app/translate.py",
+        "app/email.py",
+        "app/errors/__init__.py",
+        "app/main/__init__.py",
+        "tests.py",
+        "migrations/env.py",
+        "migrations/versions/d049de007ccf_private_messages.py",
+        "app/main/forms.py",
+        "migrations/versions/f7ac3d27bb1d_notifications.py",
+        "migrations/versions/780739b227a7_posts_table.py",
+        "migrations/versions/c81bac34faab_tasks.py",
+        "migrations/versions/ae346256b650_followers.py",
+        "app/search.py",
+        "migrations/versions/2b017edaa91f_add_language_to_posts.py",
+        "migrations/alembic.ini",
+        "app/errors/handlers.py",
+        "microblog.py",
+        "Dockerfile",
+        "boot.sh",
+        "deployment/supervisor/microblog.conf",
+        "deployment/supervisor/microblog-tasks.conf",
+        "babel.cfg"
+      ],
+      "quality": [
+        "app/cli.py",
+        "app/api/__init__.py",
+        "app/models.py",
+        "app/auth/__init__.py",
+        "app/main/routes.py",
+        "app/auth/routes.py",
+        "app/api/users.py",
+        "app/auth/forms.py",
+        "migrations/versions/e517276bb1c2_users_table.py",
+        "config.py",
+        "migrations/versions/37f06a334dbf_new_fields_in_user_model.py",
+        "migrations/versions/834b1a697901_user_tokens.py",
+        "app/api/auth.py",
+        "app/auth/email.py",
+        "app/api/errors.py",
+        "app/api/tokens.py",
+        "app/__init__.py",
+        "app/tasks.py",
+        "app/translate.py",
+        "app/email.py",
+        "app/errors/__init__.py",
+        "app/main/__init__.py",
+        "tests.py",
+        "migrations/env.py",
+        "migrations/versions/d049de007ccf_private_messages.py",
+        "app/main/forms.py",
+        "migrations/versions/f7ac3d27bb1d_notifications.py",
+        "migrations/versions/780739b227a7_posts_table.py",
+        "migrations/versions/c81bac34faab_tasks.py",
+        "migrations/versions/ae346256b650_followers.py",
+        "app/search.py",
+        "migrations/versions/2b017edaa91f_add_language_to_posts.py",
+        "app/errors/handlers.py",
+        "microblog.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": []
+    }
+  },
+  "tool_hits": 27,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "SEC-1",
+      "file": "app/cli.py",
+      "line": 21,
+      "severity": "medium",
+      "issue": "Command injection via os.system using unvalidated user input 'lang'",
+      "evidence": "            'pybabel init -i messages.pot -d app/translations -l ' + lang):",
+      "fix": "Use subprocess with a list of arguments instead of shell execution with string concatenation",
+      "source": "security"
+    },
+    {
+      "id": "QUAL-1",
+      "file": "app/models.py",
+      "line": 191,
+      "severity": "medium",
+      "issue": "Swallowed exception using bare except, making debugging token verification failures difficult",
+      "evidence": "except Exception:\n            return",
+      "fix": "Catch specific expected exceptions (e.g. jwt.PyJWTError) or log the error before returning",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-2",
+      "file": "app/main/routes.py",
+      "line": 114,
+      "severity": "medium",
+      "issue": "Duplicated follow and unfollow logic could be refactored into a single helper",
+      "evidence": "def follow(username):",
+      "fix": "Extract common follow/unfollow handling into a shared helper function",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-3",
+      "file": "app/main/routes.py",
+      "line": 135,
+      "severity": "medium",
+      "issue": "Duplicated follow and unfollow logic could be refactored into a single helper",
+      "evidence": "def unfollow(username):",
+      "fix": "Extract common follow/unfollow handling into a shared helper function",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-4",
+      "file": "app/__init__.py",
+      "line": 99,
+      "severity": "medium",
+      "issue": "models imported at end of module but unused",
+      "evidence": "from app import models",
+      "fix": "Remove unused import or add to __all__",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-5",
+      "file": "app/errors/__init__.py",
+      "line": 5,
+      "severity": "medium",
+      "issue": "handlers imported but unused",
+      "evidence": "from app.errors import handlers",
+      "fix": "Remove unused import or add to __all__",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-6",
+      "file": "app/main/__init__.py",
+      "line": 5,
+      "severity": "medium",
+      "issue": "routes imported but unused",
+      "evidence": "from app.main import routes",
+      "fix": "Remove unused import or add to __all__",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-7",
+      "file": "app/search.py",
+      "line": 1,
+      "severity": "medium",
+      "issue": "Public module has no docstring",
+      "evidence": "from flask import current_app",
+      "fix": "Add module-level docstring describing search utility functions",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-8",
+      "file": "app/errors/handlers.py",
+      "line": 1,
+      "severity": "medium",
+      "issue": "Public module has no docstring",
+      "evidence": "from flask import render_template, request",
+      "fix": "Add module-level docstring describing error handlers",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-9",
+      "file": "microblog.py",
+      "line": 1,
+      "severity": "medium",
+      "issue": "Public module has no docstring",
+      "evidence": "import sqlalchemy as sa",
+      "fix": "Add module-level docstring for the application entrypoint",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-10",
+      "file": "app/tasks.py",
+      "line": 41,
+      "severity": "low",
+      "issue": "Manual counter increment in for loop instead of using enumerate",
+      "evidence": "i += 1",
+      "fix": "Use enumerate() in the for loop",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-11",
+      "file": "app/main/forms.py",
+      "line": 42,
+      "severity": "low",
+      "issue": "Use of old-style super() call",
+      "evidence": "        super(SearchForm, self).__init__(*args, **kwargs)",
+      "fix": "Use super().__init__(*args, **kwargs)",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "SEC-1",
+    "QUAL-1",
+    "QUAL-2",
+    "QUAL-3",
+    "QUAL-4",
+    "QUAL-7",
+    "QUAL-8",
+    "QUAL-10"
+  ],
+  "rejected": [
+    {
+      "id": "QUAL-11",
+      "stage": "precheck",
+      "reason": "evidence snippet not found near the cited line"
+    },
+    {
+      "id": "QUAL-5",
+      "stage": "llm",
+      "reason": "The import of handlers at the bottom of an init file is a common Flask pattern to register error handlers with the blueprint and is not unused."
+    },
+    {
+      "id": "QUAL-6",
+      "stage": "llm",
+      "reason": "Importing routes at the bottom of the blueprint module is a standard Flask pattern to register routes and avoid circular imports."
+    },
+    {
+      "id": "QUAL-9",
+      "stage": "llm",
+      "reason": "Lack of a module-level docstring is a minor style issue rather than a code defect, and the file is a simple entry-point script."
+    }
+  ],
+  "architecture": {
+    "summary": "This is a full-featured microblog web application built with Flask, SQLAlchemy, and Bootstrap. It includes user authentication, profile management, followers, private messaging, translations, notifications, background tasks via RQ, and a REST API.",
+    "modules": [
+      {
+        "name": "app/__init__.py",
+        "purpose": "Initializes the Flask application, database, login manager, mail, and other extensions."
+      },
+      {
+        "name": "app/models.py",
+        "purpose": "Defines database models such as User, Post, Message, and Notification using SQLAlchemy."
+      },
+      {
+        "name": "app/main/routes.py",
+        "purpose": "Handles main web pages like the home feed, explore page, user profiles, and messages."
+      },
+      {
+        "name": "app/auth/routes.py",
+        "purpose": "Manages user authentication routes including login, logout, registration, and password resets."
+      },
+      {
+        "name": "app/api/users.py",
+        "purpose": "Provides REST API endpoints for user management and retrieval."
+      },
+      {
+        "name": "app/email.py",
+        "purpose": "Handles sending asynchronous or synchronous emails such as password reset links."
+      },
+      {
+        "name": "app/tasks.py",
+        "purpose": "Contains background tasks processed by RQ (Redis Queue)."
+      },
+      {
+        "name": "app/search.py",
+        "purpose": "Provides full-text search capabilities utilizing Elasticsearch."
+      },
+      {
+        "name": "app/translate.py",
+        "purpose": "Handles translation features for posts."
+      },
+      {
+        "name": "config.py",
+        "purpose": "Stores configuration variables for the Flask application."
+      }
+    ],
+    "entry_points": [
+      "microblog.py",
+      "boot.sh"
+    ],
+    "dependencies": [
+      "Flask",
+      "Flask-SQLAlchemy",
+      "Flask-Migrate",
+      "Flask-Login",
+      "Flask-Mail",
+      "Flask-WTF",
+      "Flask-Babel",
+      "Flask-HTTPAuth",
+      "SQLAlchemy",
+      "Allembic",
+      "PyJWT",
+      "elasticsearch",
+      "redis",
+      "rq",
+      "gunicorn"
+    ]
+  },
+  "score": {
+    "score": 71,
+    "per_kloc": 4.26,
+    "counts": {
+      "high": 0,
+      "medium": 7,
+      "low": 1
+    }
+  },
+  "stats": {
+    "seconds": 125.7,
+    "llm_calls": 21,
+    "llm_errors": 0,
+    "llm_seconds": 26.2,
+    "verifier_seconds": 59.6,
+    "verifier_calls": 10
+  },
+  "warnings": []
+}
