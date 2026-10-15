@@ -1,0 +1,37 @@
+# Runs Repo Reviewer on this project's own pull requests.
+#
+# To use it in another repository, copy this file there and replace `uses: ./` with
+# `uses: <owner>/<this-repo>@<commit-sha>`, then add a GEMINI_API_KEY repository secret.
+#
+# Security: the `pull_request` trigger (not `pull_request_target`) means pull requests from forks
+# never receive the API key: the bot then reports "not reviewed" (and fails if fail-on is set).
+# Never switch to pull_request_target: with `uses: ./` it would run the PR's own code with the
+# secret (the bot refuses to run under that trigger). External users should pin `@<commit-sha>`.
+name: Repo Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: repo-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0  # the diff needs the base commit
+          ref: ${{ github.event.pull_request.head.sha }}  # review the PR head, not GitHub's merge commit
+          persist-credentials: false  # do not leave the token in .git/config
+      - uses: ./
+        with:
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          fail-on: none
