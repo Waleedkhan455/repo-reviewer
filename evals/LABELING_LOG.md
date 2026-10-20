@@ -30,3 +30,18 @@ of the Verifier's rejections earlier in the project, so this is close to, but no
 72 findings: **26 real, 46 false**; 11 real findings matched a ground-truth issue (9 of the 18 issues).
 Labels are stored in `labels.json` (keyed by finding fingerprint); `python -m evals.run_evals score` recomputes
 everything from them.
+
+## Round 2: Quality agent fixed (pipeline v9, run set `quality-v2`), 2026-10-20
+
+Same labeler (Claude), same rules, same blind procedure. The run was pinned to the baseline's model
+(`gemini-3.5-flash-lite`) so the comparison isolates the code change. 35 raw findings: 2 were identical to baseline
+findings and reuse their labels; the 33 new ones were labeled **23 real, 10 false**.
+
+Notes on judgment calls in this round:
+- vulpy `getcountry(request.remote_addr)` (real wrong argument) labeled **false**: the finding claims a `TypeError`
+  crash, but the error is caught inside `getcountry`, so the stated consequence is wrong (rule 2).
+- vulpy `bad/libsession.py` "unsafe double base64 decoding ... logic flaws" labeled **false**: right line, but the
+  description does not identify the real problem (an unsigned, forgeable session cookie).
+- itsdangerous "`last_exception` may be unset" labeled **false**: `iter_unsigners` always yields at least one signer.
+- DSVW `tests/fixture.py` `shell=True` labeled **false**: it is a string literal used as a test payload, not app code.
+

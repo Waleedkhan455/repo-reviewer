@@ -1,0 +1,213 @@
+{
+  "run_id": "f5118efa7051",
+  "repo": "anxolerd/dvpwa",
+  "commit": "a1d8f89fac2e57093189853c6527c2b01fc1d9c1",
+  "pipeline_version": "9",
+  "model": "gemini-3.5-flash-lite",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "javascript",
+      "python"
+    ],
+    "assignments": {
+      "architect": [
+        "README.rst",
+        "requirements.txt",
+        "sqli/views.py",
+        "sqli/app.py",
+        "sqli/middlewares.py",
+        "sqli/dao/student.py",
+        "sqli/dao/user.py",
+        "run.py",
+        "sqli/dao/course.py",
+        "sqli/routes.py",
+        "sqli/dao/mark.py",
+        "sqli/dao/review.py"
+      ],
+      "security": [
+        "sqli/views.py",
+        "sqli/app.py",
+        "sqli/middlewares.py",
+        "sqli/dao/student.py",
+        "sqli/dao/user.py",
+        "run.py",
+        "sqli/dao/course.py",
+        "sqli/routes.py",
+        "sqli/dao/mark.py",
+        "sqli/dao/review.py",
+        "sqli/utils/auth.py",
+        "sqli/services/db.py",
+        "sqli/services/redis.py",
+        "sqli/utils/jinja2.py",
+        "sqli/schema/config.py",
+        "sqli/schema/forms.py",
+        "config/dev.yaml",
+        "sqli/static/js/init.js",
+        "docker-compose.yml",
+        "recreate.sh"
+      ],
+      "quality": [
+        "sqli/views.py",
+        "sqli/app.py",
+        "sqli/middlewares.py",
+        "sqli/dao/student.py",
+        "sqli/dao/user.py",
+        "run.py",
+        "sqli/dao/course.py",
+        "sqli/routes.py",
+        "sqli/dao/mark.py",
+        "sqli/dao/review.py",
+        "sqli/utils/auth.py",
+        "sqli/services/db.py",
+        "sqli/services/redis.py",
+        "sqli/utils/jinja2.py",
+        "sqli/schema/config.py",
+        "sqli/schema/forms.py",
+        "sqli/static/js/init.js"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": [],
+      "tests": [],
+      "vendored": []
+    }
+  },
+  "tool_hits": 10,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "SEC-1",
+      "file": "sqli/dao/student.py",
+      "line": 42,
+      "severity": "high",
+      "issue": "SQL query built with string formatting / concatenation leading to SQL injection",
+      "evidence": "    @staticmethod\n    async def create(conn: Connection, name: str):\n        q = (\"INSERT INTO students (name) \"\n             \"VALUES ('%(name)s)' % {'name': name})\n        async with conn.cursor() as cur:\n            await cur.execute(q)",
+      "fix": "Use parameterized queries like `await cur.execute('INSERT INTO students (name) VALUES (%s)', (name,))`",
+      "source": "security"
+    },
+    {
+      "id": "SEC-2",
+      "file": "sqli/dao/user.py",
+      "line": 41,
+      "severity": "medium",
+      "issue": "Use of weak MD5 hash for password verification",
+      "evidence": "    def check_password(self, password: str):\n        return self.pwd_hash == md5(password.encode('utf-8')).hexdigest()",
+      "fix": "Use a secure password hashing algorithm like bcrypt, scrypt, or argon2",
+      "source": "security"
+    },
+    {
+      "id": "QUAL-1",
+      "file": "sqli/dao/course.py",
+      "line": 37,
+      "severity": "high",
+      "issue": "Passing query parameters as kwargs to cur.execute instead of args causes a runtime TypeError when listing courses",
+      "evidence": "            await cur.execute(q, **params)",
+      "fix": "Pass params as a tuple or dictionary according to aiopg cursor.execute signature, e.g., await cur.execute(q, params)",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "SEC-2"
+  ],
+  "rejected": [
+    {
+      "id": "SEC-1",
+      "stage": "precheck",
+      "reason": "evidence snippet not found near the cited line"
+    },
+    {
+      "id": "QUAL-1",
+      "stage": "llm",
+      "reason": "Passing params as kwargs using **params is the correct syntax for named placeholders in many database connectors like PyMySQL/aiomysql."
+    }
+  ],
+  "architecture": {
+    "summary": "DVPWA (Damn Vulnerable Python Web Application) is an intentionally vulnerable web application built with Python using the aiohttp framework, PostgreSQL, and Redis. It is designed to demonstrate various real-world web vulnerabilities like SQL injection and session issues in an educational context.",
+    "modules": [
+      {
+        "name": "sqli.app",
+        "purpose": "Initializes the aiohttp web application, configures middlewares, routes, and services."
+      },
+      {
+        "name": "sqli.routes",
+        "purpose": "Registers URL endpoints and maps them to view handler functions."
+      },
+      {
+        "name": "sqli.views",
+        "purpose": "Contains request handler logic for rendering templates, processing forms, and handling authentication."
+      },
+      {
+        "name": "sqli.middlewares",
+        "purpose": "Implements custom middlewares for sessions, error handling, and optional CSRF protection."
+      },
+      {
+        "name": "sqli.dao.student",
+        "purpose": "Data access object handling database operations for students."
+      },
+      {
+        "name": "sqli.dao.course",
+        "purpose": "Data access object handling database operations for courses."
+      },
+      {
+        "name": "sqli.dao.user",
+        "purpose": "Data access object handling user authentication and data retrieval."
+      },
+      {
+        "name": "sqli.services.db",
+        "purpose": "Sets up and manages the PostgreSQL database connection pool via aiopg."
+      },
+      {
+        "name": "sqli.services.redis",
+        "purpose": "Sets up and manages the Redis client connection for session storage."
+      }
+    ],
+    "entry_points": [
+      "run.py"
+    ],
+    "dependencies": [
+      "aiohttp",
+      "aiohttp-jinja2",
+      "aiohttp-session",
+      "aiopg",
+      "aioredis",
+      "async-timeout",
+      "attrs",
+      "chardet",
+      "hiredis",
+      "idna",
+      "jinja2",
+      "markupsafe",
+      "multidict",
+      "psycopg2",
+      "pyyaml"
+    ]
+  },
+  "score": {
+    "score": 96,
+    "per_kloc": 1.0,
+    "counts": {
+      "high": 0,
+      "medium": 1,
+      "low": 0
+    }
+  },
+  "stats": {
+    "seconds": 58.3,
+    "llm_calls": 8,
+    "llm_errors": 0,
+    "llm_seconds": 37.9,
+    "verifier_seconds": 7.3,
+    "verifier_calls": 2,
+    "models_used": {
+      "gemini-3.5-flash-lite": 8
+    }
+  },
+  "warnings": []
+}

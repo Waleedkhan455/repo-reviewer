@@ -1,0 +1,172 @@
+{
+  "run_id": "61ba6830830b",
+  "repo": "pallets/itsdangerous",
+  "commit": "672971d66a2ef9f85151e53283113f33d642dabd",
+  "pipeline_version": "9",
+  "model": "gemini-3.5-flash-lite",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "python"
+    ],
+    "assignments": {
+      "architect": [
+        "README.md",
+        "pyproject.toml",
+        "src/itsdangerous/signer.py",
+        "src/itsdangerous/timed.py",
+        "src/itsdangerous/serializer.py",
+        "src/itsdangerous/exc.py",
+        "src/itsdangerous/url_safe.py",
+        "docs/conf.py",
+        "src/itsdangerous/encoding.py",
+        "src/itsdangerous/__init__.py",
+        "src/itsdangerous/_json.py"
+      ],
+      "security": [
+        "tests/test_itsdangerous/test_serializer.py",
+        "tests/test_itsdangerous/test_timed.py",
+        "tests/test_itsdangerous/test_url_safe.py",
+        "src/itsdangerous/signer.py",
+        "src/itsdangerous/timed.py",
+        ".pre-commit-config.yaml",
+        ".github/ISSUE_TEMPLATE/config.yml",
+        "src/itsdangerous/serializer.py",
+        "pyproject.toml",
+        "tests/test_itsdangerous/test_signer.py",
+        "src/itsdangerous/exc.py",
+        "src/itsdangerous/url_safe.py",
+        "docs/conf.py",
+        ".github/workflows/tests.yaml",
+        ".github/workflows/publish.yaml",
+        "src/itsdangerous/encoding.py",
+        ".github/workflows/pre-commit.yaml",
+        "src/itsdangerous/__init__.py",
+        ".github/workflows/lock.yaml",
+        "src/itsdangerous/_json.py",
+        ".devcontainer/on-create-command.sh",
+        ".devcontainer/devcontainer.json",
+        ".readthedocs.yaml"
+      ],
+      "quality": [
+        "src/itsdangerous/signer.py",
+        "src/itsdangerous/timed.py",
+        "src/itsdangerous/serializer.py",
+        "src/itsdangerous/exc.py",
+        "src/itsdangerous/url_safe.py",
+        "docs/conf.py",
+        "src/itsdangerous/encoding.py",
+        "src/itsdangerous/__init__.py",
+        "src/itsdangerous/_json.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": [],
+      "tests": [
+        "tests/test_itsdangerous/test_encoding.py"
+      ],
+      "vendored": []
+    }
+  },
+  "tool_hits": 18,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "QUAL-1",
+      "file": "src/itsdangerous/timed.py",
+      "line": 220,
+      "severity": "high",
+      "issue": "Raises last_exception which can be uninitialized or None if the iter_unsigners loop is empty, causing a TypeError crash",
+      "evidence": "raise t.cast(BadSignature, last_exception)",
+      "fix": "Initialize last_exception to a default BadSignature or check if it is None before raising",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "QUAL-1"
+  ],
+  "rejected": [],
+  "architecture": {
+    "summary": "ItsDangerous is a Python library that provides various helpers to pass data to untrusted environments and get it back safe and sound. It uses cryptographic signing to ensure that tokens are not tampered with, supporting features like serialization, optional compression, and timed signatures.",
+    "modules": [
+      {
+        "name": "itsdangerous.__init__",
+        "purpose": "Exposes the public API classes and functions of the package."
+      },
+      {
+        "name": "itsdangerous._json",
+        "purpose": "Provides a compact JSON serialization wrapper without whitespace."
+      },
+      {
+        "name": "itsdangerous.encoding",
+        "purpose": "Handles base64 encoding/decoding and byte conversion utilities."
+      },
+      {
+        "name": "itsdangerous.exc",
+        "purpose": "Defines custom exception classes for handling bad signatures, payloads, and expired tokens."
+      },
+      {
+        "name": "itsdangerous.serializer",
+        "purpose": "Wraps signers to enable serialization and securely signing data structures."
+      },
+      {
+        "name": "itsdangerous.signer",
+        "purpose": "Provides cryptographic signing algorithms and the base Signer class."
+      },
+      {
+        "name": "itsdangerous.timed",
+        "purpose": "Implements timestamp-based signing and serializers for expiring tokens."
+      },
+      {
+        "name": "itsdangerous.url_safe",
+        "purpose": "Combines serialization, compression, and signing into URL-safe strings."
+      }
+    ],
+    "entry_points": [],
+    "dependencies": [
+      "flit_core",
+      "ruff",
+      "tox",
+      "tox-uv",
+      "pallets-sphinx-themes",
+      "sphinx",
+      "sphinxcontrib-log-cabinet",
+      "sphinx-autobuild",
+      "pre-commit",
+      "pre-commit-uv",
+      "freezegun",
+      "pytest",
+      "mypy",
+      "pyright"
+    ]
+  },
+  "score": {
+    "score": 90,
+    "per_kloc": 0.58,
+    "counts": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "stats": {
+    "seconds": 66.4,
+    "llm_calls": 11,
+    "llm_errors": 0,
+    "llm_seconds": 20.2,
+    "verifier_seconds": 6.0,
+    "verifier_calls": 1,
+    "models_used": {
+      "gemini-3.5-flash-lite": 11
+    }
+  },
+  "warnings": [
+    "1 test file(s) without scanner hits not reviewed by the AI agents: tests/test_itsdangerous/test_encoding.py"
+  ]
+}

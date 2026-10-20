@@ -1,0 +1,159 @@
+{
+  "run_id": "05fb874d6db8",
+  "repo": "sloria/environs",
+  "commit": "d65f5d16155f6653569f8319b458484ff27be297",
+  "pipeline_version": "9",
+  "model": "gemini-3.5-flash-lite",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "python"
+    ],
+    "assignments": {
+      "architect": [
+        "README.md",
+        "pyproject.toml",
+        "src/environs/__init__.py",
+        "src/environs/fields.py",
+        "src/environs/types.py",
+        "examples/django_example.py",
+        "examples/simple_example.py",
+        "src/environs/exceptions.py",
+        "examples/validation_example.py",
+        "examples/plugin_example.py",
+        "examples/deferred_validation_example.py",
+        "examples/marshmallow_example.py"
+      ],
+      "security": [
+        ".pre-commit-config.yaml",
+        "src/environs/__init__.py",
+        "src/environs/fields.py",
+        "src/environs/types.py",
+        "pyproject.toml",
+        ".github/workflows/build-release.yml",
+        "examples/django_example.py",
+        "examples/simple_example.py",
+        "src/environs/exceptions.py",
+        "tox.ini",
+        "examples/validation_example.py",
+        "examples/plugin_example.py",
+        "examples/deferred_validation_example.py",
+        "examples/marshmallow_example.py",
+        "examples/prefix_example.py",
+        "examples/fileaware_example.py",
+        "renovate.json"
+      ],
+      "quality": [
+        "src/environs/__init__.py",
+        "src/environs/fields.py",
+        "src/environs/types.py",
+        "examples/django_example.py",
+        "examples/simple_example.py",
+        "src/environs/exceptions.py",
+        "examples/validation_example.py",
+        "examples/plugin_example.py",
+        "examples/deferred_validation_example.py",
+        "examples/marshmallow_example.py",
+        "examples/prefix_example.py",
+        "examples/fileaware_example.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": [
+        "src/environs/__init__.py"
+      ],
+      "tests": [
+        "tests/test_environs.py",
+        "tests/mypy_test_cases/env.py",
+        "tests/.env",
+        "tests/.custom.env",
+        "tests/subfolder/.another.env"
+      ],
+      "vendored": []
+    }
+  },
+  "tool_hits": 0,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "QUAL-1",
+      "file": "src/environs/__init__.py",
+      "line": 475,
+      "severity": "medium",
+      "issue": "The old_prefix is restored after setting it to None in finally, so nested prefixed blocks will incorrectly revert the prefix to the outer context's old_prefix instead of keeping the nested one during exit or corrupting state.",
+      "evidence": "        self._prefix = old_prefix",
+      "fix": "Remove or correct the assignment after the try/finally block so prefix restoration happens properly.",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [],
+  "rejected": [
+    {
+      "id": "QUAL-1",
+      "stage": "llm",
+      "reason": "Line 475 is unreachable due to the generator context manager yielding at line 471 and execution returning to the finally block on exit."
+    }
+  ],
+  "architecture": {
+    "summary": "environs is a Python library for simplified environment variable parsing, type-casting, and validation, compatible with the Twelve-Factor App methodology. It integrates smoothly with web frameworks like Django and Flask and allows reading from .env files and custom parsers powered by marshmallow.",
+    "modules": [
+      {
+        "name": "environs.__init__",
+        "purpose": "Core Env class implementation, environment variable parsing logic, and public exports."
+      },
+      {
+        "name": "environs.fields",
+        "purpose": "Custom marshmallow fields designed for type parsing such as paths, log levels, and durations."
+      },
+      {
+        "name": "environs.exceptions",
+        "purpose": "Custom exceptions for error handling during environment variable resolution and validation."
+      },
+      {
+        "name": "environs.types",
+        "purpose": "Type aliases and protocol definitions used across the library for type safety."
+      }
+    ],
+    "entry_points": [
+      "src/environs/__init__.py"
+    ],
+    "dependencies": [
+      "python-dotenv",
+      "marshmallow",
+      "typing-extensions",
+      "dj-database-url",
+      "dj-email-url",
+      "django-cache-url"
+    ]
+  },
+  "score": {
+    "score": 100,
+    "per_kloc": 0.0,
+    "counts": {
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "stats": {
+    "seconds": 51.1,
+    "llm_calls": 8,
+    "llm_errors": 0,
+    "llm_seconds": 16.0,
+    "verifier_seconds": 7.9,
+    "verifier_calls": 1,
+    "models_used": {
+      "gemini-3.5-flash-lite": 8
+    }
+  },
+  "warnings": [
+    "5 test file(s) without scanner hits not reviewed by the AI agents: tests/test_environs.py, tests/mypy_test_cases/env.py, tests/.env, tests/.custom.env, tests/subfolder/.another.env",
+    "1 large files were only partly reviewed (truncated): src/environs/__init__.py"
+  ]
+}

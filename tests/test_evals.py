@@ -161,3 +161,8 @@ def test_provenance_flags_runs_without_model_records():
     new = new.model_copy(update={"stats": new.stats.model_copy(update={"models_used": {"lite": 6}})})
     old = _data("c/d", [], confirmed=[])
     assert run_evals.run_provenance([new, old]).endswith("`lite` (6 calls) (not recorded for 1 runs)")
+
+
+def test_each_run_set_has_its_own_results_file():
+    assert run_evals.results_file("default").name == "results.md"
+    assert run_evals.results_file("quality-v2").name == "results-quality-v2.md"

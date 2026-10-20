@@ -1,0 +1,188 @@
+{
+  "run_id": "66995e7c5604",
+  "repo": "gothinkster/flask-realworld-example-app",
+  "commit": "4b95fb2227dfeb5dd1a45d89b2bf48630b93fd28",
+  "pipeline_version": "9",
+  "model": "gemini-3.5-flash-lite",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "python"
+    ],
+    "assignments": {
+      "architect": [
+        "README.rst",
+        "requirements.txt",
+        "setup.cfg",
+        "conduit/app.py",
+        "conduit/user/views.py",
+        "conduit/commands.py",
+        "conduit/articles/views.py",
+        "conduit/settings.py",
+        "conduit/user/models.py",
+        "conduit/profile/views.py",
+        "conduit/user/serializers.py",
+        "conduit/user/__init__.py"
+      ],
+      "security": [
+        "tests/test_articles.py",
+        "conduit/app.py",
+        "tests/test_authentication.py",
+        "conduit/user/views.py",
+        "tests/test_models.py",
+        "conduit/commands.py",
+        "conduit/articles/views.py",
+        "conduit/settings.py",
+        "conduit/user/models.py",
+        "conduit/profile/views.py",
+        "conduit/user/serializers.py",
+        ".circleci/config.yml",
+        "conduit/user/__init__.py",
+        "conduit/articles/models.py",
+        "conduit/articles/serializers.py",
+        "conduit/profile/models.py",
+        "conduit/extensions.py",
+        "conduit/database.py",
+        "conduit/exceptions.py",
+        "tests/conftest.py",
+        "conduit/profile/serializers.py",
+        "conduit/compat.py",
+        ".travis.yml",
+        "autoapp.py",
+        "conduit/utils.py",
+        "conduit/articles/__init__.py",
+        "conduit/__init__.py",
+        "setup.cfg",
+        "conduit/profile/__init__.py",
+        "tests/test_profile.py"
+      ],
+      "quality": [
+        "conduit/app.py",
+        "conduit/user/views.py",
+        "conduit/commands.py",
+        "conduit/articles/views.py",
+        "conduit/settings.py",
+        "conduit/user/models.py",
+        "conduit/profile/views.py",
+        "conduit/user/serializers.py",
+        "conduit/user/__init__.py",
+        "conduit/articles/models.py",
+        "conduit/articles/serializers.py",
+        "conduit/profile/models.py",
+        "conduit/extensions.py",
+        "conduit/database.py",
+        "conduit/exceptions.py",
+        "conduit/profile/serializers.py",
+        "conduit/compat.py",
+        "autoapp.py",
+        "conduit/utils.py",
+        "conduit/articles/__init__.py",
+        "conduit/__init__.py",
+        "conduit/profile/__init__.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": [],
+      "tests": [
+        "tests/test_config.py",
+        "tests/factories.py",
+        "tests/__init__.py"
+      ],
+      "vendored": []
+    }
+  },
+  "tool_hits": 19,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "QUAL-1",
+      "file": "conduit/articles/views.py",
+      "line": 74,
+      "severity": "high",
+      "issue": "Calling delete() on a potentially None article when the slug does not exist will raise an AttributeError and crash the request",
+      "evidence": "    article.delete()",
+      "fix": "Check if article is None and raise InvalidUsage.article_not_found() before calling delete()",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "QUAL-1"
+  ],
+  "rejected": [],
+  "architecture": {
+    "summary": "This project is a Flask-based backend implementation of the RealWorld \"Conduit\" social blogging application. It provides a full REST API for user authentication, profile management, publishing articles, comments, and tagging features using SQLAlchemy and JWT for security.",
+    "modules": [
+      {
+        "name": "conduit.app",
+        "purpose": "Flask application factory and configuration registration."
+      },
+      {
+        "name": "conduit.settings",
+        "purpose": "Environment-based configuration classes (development, production, testing)."
+      },
+      {
+        "name": "conduit.database",
+        "purpose": "Database setup and base models."
+      },
+      {
+        "name": "conduit.user",
+        "purpose": "User account management, authentication models, serializers, and views."
+      },
+      {
+        "name": "conduit.profile",
+        "purpose": "User profile management and following/unfollowing views."
+      },
+      {
+        "name": "conduit.articles",
+        "purpose": "Article management, tags, comments, serializers, and views."
+      },
+      {
+        "name": "conduit.commands",
+        "purpose": "Custom CLI commands for testing, linting, and database management."
+      }
+    ],
+    "entry_points": [
+      "autoapp.py"
+    ],
+    "dependencies": [
+      "flask",
+      "flask-sqlalchemy",
+      "flask-migrate",
+      "flask-jwt-extended",
+      "flask-apispec",
+      "marshmallow",
+      "bcrypt",
+      "psycopg2",
+      "pytest"
+    ]
+  },
+  "score": {
+    "score": 90,
+    "per_kloc": 0.6,
+    "counts": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "stats": {
+    "seconds": 47.7,
+    "llm_calls": 8,
+    "llm_errors": 0,
+    "llm_seconds": 15.3,
+    "verifier_seconds": 6.1,
+    "verifier_calls": 1,
+    "models_used": {
+      "gemini-3.5-flash-lite": 8
+    }
+  },
+  "warnings": [
+    "3 test file(s) without scanner hits not reviewed by the AI agents: tests/test_config.py, tests/factories.py, tests/__init__.py"
+  ]
+}

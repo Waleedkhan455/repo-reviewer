@@ -40,7 +40,7 @@ LLM_RETRIES = _int("RR_LLM_RETRIES", 3)
 LLM_RPM = _int("RR_LLM_RPM", 10)  # free-tier requests per minute
 LLM_429_MIN_WAIT_S = 20  # rate-limit retries wait at least this long (or Gemini's retryDelay)
 LLM_MAX_WAIT_S = 60
-PIPELINE_VERSION = "8"  # bump when prompts or models change (used for caching)
+PIPELINE_VERSION = "9"  # bump when prompts or models change (used for caching)
 
 # --- Repo access -------------------------------------------------------------
 GITHUB_TOKEN = _env("GITHUB_TOKEN")
@@ -73,7 +73,9 @@ TOP_FIXES = 5
 SCAN_TIMEOUT_S = _int("RR_SCAN_TIMEOUT_S", 120)
 BANDIT_INI = ROOT / "src" / "tools" / "bandit.ini"  # ours, never the repo's .bandit
 BANDIT_SKIP = "B101"  # assert_used: noise in test suites
-RUFF_RULES = "F,E9,E722,B,C901,SIM,N,PLR0911,PLR0912,PLR0913,PLR0915"
+# Bug-oriented rules only: style and count rules (SIM, N, C901, PLR) produced mostly false Quality
+# findings in the evals (see evals/LABELING_LOG.md).
+RUFF_RULES = "F,E9,E722,B"
 MAX_PATTERN_LINE_CHARS = 1_000  # skip minified lines in the regex scan
 # Free Semgrep registry rule packs per language (fetched from semgrep.dev at scan time).
 SEMGREP_PACKS = {

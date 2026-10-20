@@ -19,15 +19,18 @@ def test_bandit_ignores_nosec_and_repo_config(make_repo):
     assert hit.severity == "high"
 
 
-def test_ruff_ignores_repo_config_and_noqa(make_repo):
+def test_ruff_ignores_repo_config_but_respects_inline_noqa(make_repo):
+    """The repo's ruff config cannot switch rules off (--isolated). Inline `# noqa` is respected: ruff
+    only feeds Quality/Bug Hunter hints, never the Security agent or the PR merge gate, and ignoring it
+    produced false findings on intentional imports in the evals."""
+    code = "import os  # noqa: F401\nimport sys\n\ndef f():\n    try:\n        pass\n    except:\n        pass\n"
     root = make_repo({
-        "a.py": "import os  # noqa: F401\n\ndef f():\n    try:\n        pass\n    except:\n        pass\n",
+        "a.py": code,
         "pyproject.toml": "[tool.ruff.lint]\nignore = [\"F401\", \"E722\"]\n",
     })
-    hits = run_ruff(root)
-    rules = {h.rule for h in hits}
-    assert {"F401", "E722"} <= rules
-    assert all(h.file == "a.py" for h in hits)
+    hits = {(h.rule, h.line) for h in run_ruff(root)}
+    assert ("F401", 2) in hits and ("E722", 7) in hits  # the repo's config did not silence them
+    assert ("F401", 1) not in hits  # the author's explicit noqa is honoured
 
 
 def test_planted_modules_in_repo_are_never_executed(make_repo, tmp_path):

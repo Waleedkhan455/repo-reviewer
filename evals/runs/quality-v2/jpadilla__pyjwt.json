@@ -1,0 +1,209 @@
+{
+  "run_id": "f80098346c12",
+  "repo": "jpadilla/pyjwt",
+  "commit": "16231abfd1d8eab4953e8779b3017b859c88565e",
+  "pipeline_version": "9",
+  "model": "gemini-3.5-flash-lite",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "python"
+    ],
+    "assignments": {
+      "architect": [
+        "README.rst",
+        "pyproject.toml",
+        "jwt/api_jws.py",
+        "jwt/api_jwt.py",
+        "jwt/api_jwk.py",
+        "jwt/algorithms.py",
+        "jwt/jwks_client.py",
+        "docs/conf.py",
+        "jwt/utils.py",
+        "jwt/types.py",
+        "jwt/exceptions.py",
+        "jwt/__init__.py"
+      ],
+      "security": [
+        "tests/test_api_jws.py",
+        "tests/test_api_jwt.py",
+        "tests/test_jwks_client.py",
+        "tests/test_algorithms.py",
+        "jwt/api_jws.py",
+        "jwt/api_jwt.py",
+        "jwt/api_jwk.py",
+        ".pre-commit-config.yaml",
+        "jwt/algorithms.py",
+        "jwt/jwks_client.py",
+        "tests/test_advisory.py",
+        "docs/conf.py",
+        "jwt/utils.py",
+        ".github/workflows/main.yml",
+        "jwt/types.py",
+        "pyproject.toml",
+        "jwt/exceptions.py",
+        "tox.ini",
+        "ruff.toml",
+        "jwt/__init__.py",
+        "jwt/help.py",
+        ".github/workflows/pypi-package.yml",
+        "jwt/jwk_set_cache.py",
+        "tests/test_compressed_jwt.py",
+        ".oss-scanner/Dockerfile",
+        ".github/workflows/stale.yml",
+        "tests/test_jwt.py",
+        ".github/workflows/enforce-changelog-entry.yml",
+        "jwt/warnings.py",
+        ".readthedocs.yaml",
+        "codecov.yml",
+        ".github/dependabot.yml",
+        ".github/FUNDING.yml"
+      ],
+      "quality": [
+        "jwt/api_jws.py",
+        "jwt/api_jwt.py",
+        "jwt/api_jwk.py",
+        "jwt/algorithms.py",
+        "jwt/jwks_client.py",
+        "docs/conf.py",
+        "jwt/utils.py",
+        "jwt/types.py",
+        "jwt/exceptions.py",
+        "jwt/__init__.py",
+        "jwt/help.py",
+        "jwt/jwk_set_cache.py",
+        "jwt/warnings.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": [
+        "tests/test_api_jws.py",
+        "tests/test_api_jwt.py",
+        "tests/test_jwks_client.py",
+        "tests/test_algorithms.py",
+        "jwt/api_jwt.py",
+        "jwt/algorithms.py"
+      ],
+      "tests": [
+        "tests/test_api_jwk.py",
+        "tests/keys/jwk_keyset_with_unknown_alg.json",
+        "tests/keys/jwk_rsa_key.json",
+        "tests/keys/__init__.py",
+        "tests/test_utils.py",
+        "tests/keys/jwk_keyset_only_unknown_alg.json",
+        "tests/utils.py",
+        "tests/keys/jwk_rsa_pub.json",
+        "tests/keys/jwk_ec_key_P-521.json",
+        "tests/keys/jwk_ec_key_P-384.json",
+        "tests/keys/jwk_ec_pub_P-521.json",
+        "tests/keys/jwk_okp_key_Ed448.json",
+        "tests/keys/jwk_ec_key_secp256k1.json",
+        "tests/keys/jwk_ec_key_P-256.json",
+        "tests/keys/jwk_ec_pub_P-384.json",
+        "tests/test_exceptions.py",
+        "tests/keys/jwk_ec_pub_secp256k1.json",
+        "tests/keys/jwk_ec_pub_P-256.json",
+        "tests/keys/jwk_okp_pub_Ed448.json",
+        "tests/keys/jwk_hmac.json",
+        "tests/keys/jwk_okp_key_Ed25519.json",
+        "tests/keys/jwk_okp_pub_Ed25519.json"
+      ],
+      "vendored": []
+    }
+  },
+  "tool_hits": 187,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "QUAL-1",
+      "file": "jwt/api_jwk.py",
+      "line": 144,
+      "severity": "high",
+      "issue": "Checking 'if not keys:' before 'if not isinstance(keys, list):' will raise an AttributeError if keys is not a list (e.g., a dict or int), because non-empty non-lists do not have a boolean length check or might fail length comparison depending on type",
+      "evidence": "        if not keys:\n            raise PyJWKSetError(\"The JWK Set did not contain any keys\")\n\n        if not isinstance(keys, list):",
+      "fix": "Check `isinstance(keys, list)` before checking `if not keys:`",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "QUAL-1"
+  ],
+  "rejected": [],
+  "architecture": {
+    "summary": "PyJWT is a Python implementation of RFC 7519 providing JSON Web Token (JWT) encoding and decoding capabilities. It supports various algorithms like HMAC, RSA, ECDSA, and EdDSA, along with JWK and JWKS client management.",
+    "modules": [
+      {
+        "name": "jwt/__init__.py",
+        "purpose": "Package entry point exposing high-level token encode and decode functions."
+      },
+      {
+        "name": "jwt/algorithms.py",
+        "purpose": "Implements cryptographic algorithms (HMAC, RSA, EC, EdDSA) used for signing and verifying tokens."
+      },
+      {
+        "name": "jwt/api_jwk.py",
+        "purpose": "Represents JSON Web Keys (JWK) and key sets for cryptographic operations."
+      },
+      {
+        "name": "jwt/api_jws.py",
+        "purpose": "Implements JSON Web Signature (JWS) handling, registration, and validation."
+      },
+      {
+        "name": "jwt/api_jwt.py",
+        "purpose": "Handles JWT encoding, decoding, and validation of standard claims (exp, nbf, iat, aud, iss, sub, jti)."
+      },
+      {
+        "name": "jwt/exceptions.py",
+        "purpose": "Defines custom library exceptions related to decoding, validation, and key handling."
+      },
+      {
+        "name": "jwt/jwks_client.py",
+        "purpose": "Provides a client to retrieve and cache signing keys from a JWKS endpoint."
+      },
+      {
+        "name": "jwt/utils.py",
+        "purpose": "Provides utility functions for base64url encoding/decoding, bit-length conversions, and signature manipulation."
+      }
+    ],
+    "entry_points": [],
+    "dependencies": [
+      "cryptography",
+      "sphinx",
+      "sphinx-rtd-theme",
+      "zope.interface",
+      "coverage",
+      "pytest",
+      "typing_extensions"
+    ]
+  },
+  "score": {
+    "score": 90,
+    "per_kloc": 0.11,
+    "counts": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "stats": {
+    "seconds": 121.2,
+    "llm_calls": 20,
+    "llm_errors": 0,
+    "llm_seconds": 76.7,
+    "verifier_seconds": 6.1,
+    "verifier_calls": 1,
+    "models_used": {
+      "gemini-3.5-flash-lite": 20
+    }
+  },
+  "warnings": [
+    "22 test file(s) without scanner hits not reviewed by the AI agents: tests/test_api_jwk.py, tests/keys/jwk_keyset_with_unknown_alg.json, tests/keys/jwk_rsa_key.json, tests/keys/__init__.py, tests/test_utils.py ...",
+    "6 large files were only partly reviewed (truncated): tests/test_api_jws.py, tests/test_api_jwt.py, tests/test_jwks_client.py, tests/test_algorithms.py, jwt/api_jwt.py ..."
+  ]
+}

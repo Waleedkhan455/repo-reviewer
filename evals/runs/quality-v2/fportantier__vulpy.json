@@ -1,0 +1,388 @@
+{
+  "run_id": "16761e117a1b",
+  "repo": "fportantier/vulpy",
+  "commit": "5249cc8b05a1c37f6b2f757b1cf16a509c327122",
+  "pipeline_version": "9",
+  "model": "gemini-3.5-flash-lite",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "javascript",
+      "python"
+    ],
+    "assignments": {
+      "architect": [
+        "README.rst",
+        "requirements.txt",
+        "bad/mod_api.py",
+        "good/mod_api.py",
+        "bad/libuser.py",
+        "good/libapi.py",
+        "good/libuser.py",
+        "bad/libapi.py",
+        "good/mod_mfa.py",
+        "utils/ca-csr-load.py",
+        "good/libsession.py",
+        "bad/api_post.py"
+      ],
+      "security": [
+        "bad/mod_api.py",
+        "good/mod_api.py",
+        "bad/libuser.py",
+        "good/libapi.py",
+        "good/libuser.py",
+        "bad/libapi.py",
+        "good/mod_mfa.py",
+        "utils/ca-csr-load.py",
+        "good/libsession.py",
+        "bad/api_post.py",
+        "utils/ca-csr-create.py",
+        "bad/vulpy-ssl.py",
+        "good/vulpy-ssl.py",
+        "good/mod_user.py",
+        "bad/db_init.py",
+        "bad/db.py",
+        "bad/api_list.py",
+        "utils/ca-create.py",
+        "good/libposts.py",
+        "bad/libposts.py",
+        "utils/generate_bad_passwords.py",
+        "utils/scrypt-crack.py",
+        "utils/aes-encrypt.py",
+        "utils/aes-decrypt.py",
+        "utils/scrypt-verify.py",
+        "utils/rsa-decrypt.py",
+        "utils/rsa-encrypt.py",
+        "utils/scrypt-generate.py",
+        "bad/libsession.py",
+        "good/cutpasswd.py",
+        "good/vulpy.py",
+        "bad/vulpy.py",
+        "good/mod_welcome1.py",
+        "utils/rsa-keygen.py",
+        "utils/skey.py",
+        "bad/brute.py",
+        "bad/mod_hello.py",
+        "good/mod_hello.py",
+        "bad/mod_user.py",
+        "good/db_init.py",
+        "bad/libmfa.py",
+        "good/libmfa.py",
+        "utils/rsa-verify.py",
+        "utils/httpbrute.py",
+        "utils/rsa-sign.py",
+        "bad/mod_posts.py",
+        "good/mod_posts.py",
+        "utils/crack-cvv.py",
+        "good/httpbrute.py",
+        "bad/mod_mfa.py",
+        "utils/hashfile.py",
+        "utils/crack-hash.py",
+        "utils/hmac_generate.py",
+        "utils/luncheck.py",
+        "bad/payloads/keylogger.js",
+        "good/payloads/keylogger.js",
+        "install-on-kali.sh",
+        "bad/mod_csp.py",
+        "good/mod_csp.py",
+        "utils/fernet-generate-key.py",
+        "bad/payloads/cookie.js",
+        "good/payloads/cookie.js",
+        "bad/payloads/payload.js",
+        "good/payloads/payload.js"
+      ],
+      "quality": [
+        "bad/mod_api.py",
+        "good/mod_api.py",
+        "bad/libuser.py",
+        "good/libapi.py",
+        "good/libuser.py",
+        "bad/libapi.py",
+        "good/mod_mfa.py",
+        "utils/ca-csr-load.py",
+        "good/libsession.py",
+        "bad/api_post.py",
+        "utils/ca-csr-create.py",
+        "bad/vulpy-ssl.py",
+        "good/vulpy-ssl.py",
+        "good/mod_user.py",
+        "bad/db_init.py",
+        "bad/db.py",
+        "bad/api_list.py",
+        "utils/ca-create.py",
+        "good/libposts.py",
+        "bad/libposts.py",
+        "utils/generate_bad_passwords.py",
+        "utils/scrypt-crack.py",
+        "utils/aes-encrypt.py",
+        "utils/aes-decrypt.py",
+        "utils/scrypt-verify.py",
+        "utils/rsa-decrypt.py",
+        "utils/rsa-encrypt.py",
+        "utils/scrypt-generate.py",
+        "bad/libsession.py",
+        "good/cutpasswd.py",
+        "good/vulpy.py",
+        "bad/vulpy.py",
+        "good/mod_welcome1.py",
+        "utils/rsa-keygen.py",
+        "utils/skey.py",
+        "bad/brute.py",
+        "bad/mod_hello.py",
+        "good/mod_hello.py",
+        "bad/mod_user.py",
+        "good/db_init.py",
+        "bad/libmfa.py",
+        "good/libmfa.py",
+        "utils/rsa-verify.py",
+        "utils/httpbrute.py",
+        "utils/rsa-sign.py",
+        "bad/mod_posts.py",
+        "good/mod_posts.py",
+        "utils/crack-cvv.py",
+        "good/httpbrute.py",
+        "bad/mod_mfa.py",
+        "utils/hashfile.py",
+        "utils/crack-hash.py",
+        "utils/hmac_generate.py",
+        "utils/luncheck.py",
+        "bad/payloads/keylogger.js",
+        "good/payloads/keylogger.js",
+        "bad/mod_csp.py",
+        "good/mod_csp.py",
+        "utils/fernet-generate-key.py",
+        "bad/payloads/cookie.js",
+        "good/payloads/cookie.js",
+        "bad/payloads/payload.js",
+        "good/payloads/payload.js"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": [],
+      "tests": [],
+      "vendored": [
+        "bad/static/font-awesome.min.css",
+        "good/static/font-awesome.min.css"
+      ]
+    }
+  },
+  "tool_hits": 118,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "SEC-1",
+      "file": "bad/libuser.py",
+      "line": 12,
+      "severity": "high",
+      "issue": "SQL injection via string formatting",
+      "evidence": "    user = c.execute(\"SELECT * FROM users WHERE username = '{}' and password = '{}'\".format(username, password)).fetchone()",
+      "fix": "Use parameterized queries: c.execute(\"SELECT * FROM users WHERE username = ? and password = ?\", (username, password))",
+      "source": "security"
+    },
+    {
+      "id": "SEC-2",
+      "file": "bad/libuser.py",
+      "line": 25,
+      "severity": "high",
+      "issue": "SQL injection via string formatting/modulo",
+      "evidence": "    c.execute(\"INSERT INTO users (username, password, failures, mfa_enabled, mfa_secret) VALUES ('%s', '%s', '%d', '%d', '%s')\" %(username, password, 0, 0, ''))",
+      "fix": "Use parameterized queries",
+      "source": "security"
+    },
+    {
+      "id": "SEC-3",
+      "file": "bad/libuser.py",
+      "line": 53,
+      "severity": "high",
+      "issue": "SQL injection via string formatting",
+      "evidence": "    c.execute(\"UPDATE users SET password = '{}' WHERE username = '{}'\".format(password, username))",
+      "fix": "Use parameterized queries",
+      "source": "security"
+    },
+    {
+      "id": "SEC-4",
+      "file": "good/libuser.py",
+      "line": 61,
+      "severity": "high",
+      "issue": "SQL injection via string formatting/modulo",
+      "evidence": "    c.execute(\"INSERT INTO users (username, password, salt, failures, mfa_enabled, mfa_secret) VALUES ('%s', '%s', '%s', '%d', '%d', '%s')\" %(username, '', '', 0, 0, ''))",
+      "fix": "Use parameterized queries",
+      "source": "security"
+    },
+    {
+      "id": "SEC-5",
+      "file": "bad/db.py",
+      "line": 19,
+      "severity": "high",
+      "issue": "SQL injection vulnerability via string formatting",
+      "evidence": "    for u,p in users:\n        c.execute(\"INSERT INTO users (user, password, failures) VALUES ('%s', '%s', '%d')\" %(u, p, 0))\n",
+      "fix": "Use parameterized queries instead of string formatting",
+      "source": "security"
+    },
+    {
+      "id": "SEC-6",
+      "file": "bad/db_init.py",
+      "line": 20,
+      "severity": "high",
+      "issue": "SQL injection vulnerability via string formatting",
+      "evidence": "    for u,p in users:\n        c.execute(\"INSERT INTO users (username, password, failures, mfa_enabled, mfa_secret) VALUES ('%s', '%s', '%d', '%d', '%s')\" %(u, p, 0, 0, ''))\n",
+      "fix": "Use parameterized queries instead of string formatting",
+      "source": "security"
+    },
+    {
+      "id": "SEC-7",
+      "file": "bad/libsession.py",
+      "line": 20,
+      "severity": "high",
+      "issue": "Unsafe base64 double decoding leading to potential deserialization/handling issues or logic flaws",
+      "evidence": "                session = json.loads(base64.b64decode(cookie))\n",
+      "fix": "Fix session loading logic to avoid double base64 decoding",
+      "source": "security"
+    },
+    {
+      "id": "SEC-8",
+      "file": "bad/vulpy.py",
+      "line": 55,
+      "severity": "high",
+      "issue": "Flask application running with debug=True enables arbitrary code execution",
+      "evidence": "app.run(debug=True, host='127.0.1.1', port=5000, extra_files='csp.txt')",
+      "fix": "Set debug=False in production",
+      "source": "security"
+    },
+    {
+      "id": "SEC-9",
+      "file": "bad/vulpy.py",
+      "line": 16,
+      "severity": "low",
+      "issue": "Hard-coded secret key for session management",
+      "evidence": "app.config['SECRET_KEY'] = 'aaaaaaa'",
+      "fix": "Load secret key from an environment variable or secure config file",
+      "source": "security"
+    },
+    {
+      "id": "QUAL-1",
+      "file": "good/libsession.py",
+      "line": 53,
+      "severity": "high",
+      "issue": "Passing request.remote_addr instead of request to getcountry will cause a TypeError when getcountry attempts to access remote_addr on a string",
+      "evidence": "    if country == getcountry(request.remote_addr):",
+      "fix": "Pass request instead of request.remote_addr to getcountry()",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-2",
+      "file": "good/mod_user.py",
+      "line": 86,
+      "severity": "high",
+      "issue": "flash() after return is unreachable code, so the password changed confirmation message is never displayed to the user",
+      "evidence": "    return redirect('/')\n    flash(\"Password changed\")",
+      "fix": "Place flash(\"Password changed\") before the return statement",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "SEC-1",
+    "SEC-2",
+    "SEC-3",
+    "SEC-4",
+    "SEC-5",
+    "SEC-6",
+    "SEC-7",
+    "SEC-8",
+    "SEC-9",
+    "QUAL-1",
+    "QUAL-2"
+  ],
+  "rejected": [],
+  "architecture": {
+    "summary": "Vulpy is a Python-based web application security laboratory built with Flask and SQLite. It provides two separate implementations: a vulnerable version ('bad') for learning and exploitation, and a secure version ('good') implementing security best practices and defenses against common vulnerabilities.",
+    "modules": [
+      {
+        "name": "vulpy.py",
+        "purpose": "Main Flask application entry point and route aggregator."
+      },
+      {
+        "name": "libuser.py",
+        "purpose": "User authentication, account management, and password hashing logic."
+      },
+      {
+        "name": "libsession.py",
+        "purpose": "Session management and cookie handling."
+      },
+      {
+        "name": "libposts.py",
+        "purpose": "Post creation and retrieval functionality."
+      },
+      {
+        "name": "libapi.py",
+        "purpose": "API key generation and request authentication."
+      },
+      {
+        "name": "libmfa.py",
+        "purpose": "Multi-Factor Authentication implementation using TOTP."
+      },
+      {
+        "name": "mod_api.py",
+        "purpose": "API blueprint handling key generation and post endpoints."
+      },
+      {
+        "name": "mod_user.py",
+        "purpose": "User interface blueprint for login, registration, and password changes."
+      },
+      {
+        "name": "mod_posts.py",
+        "purpose": "Blueprint for reading and publishing posts."
+      },
+      {
+        "name": "db_init.py",
+        "purpose": "Database initialization script for setting up SQLite tables."
+      }
+    ],
+    "entry_points": [
+      "bad/vulpy.py",
+      "good/vulpy.py",
+      "bad/vulpy-ssl.py",
+      "good/vulpy-ssl.py"
+    ],
+    "dependencies": [
+      "click",
+      "cryptography",
+      "Flask",
+      "geoip2",
+      "jsonschema",
+      "PyJWT",
+      "pyotp",
+      "qrcode",
+      "requests"
+    ]
+  },
+  "score": {
+    "score": 0,
+    "per_kloc": 4.46,
+    "counts": {
+      "high": 10,
+      "medium": 0,
+      "low": 1
+    }
+  },
+  "stats": {
+    "seconds": 161.0,
+    "llm_calls": 18,
+    "llm_errors": 0,
+    "llm_seconds": 92.2,
+    "verifier_seconds": 48.1,
+    "verifier_calls": 8,
+    "models_used": {
+      "gemini-3.5-flash-lite": 18
+    }
+  },
+  "warnings": [
+    "2 bundled third-party asset(s) skipped: bad/static/font-awesome.min.css, good/static/font-awesome.min.css"
+  ]
+}

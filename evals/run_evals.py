@@ -30,6 +30,11 @@ REPOS_FILE = config.EVALS_DIR / "repos.json"
 RUNS_DIR = config.EVALS_DIR / "runs"
 LABELS_FILE = config.EVALS_DIR / "labels.json"
 RESULTS_FILE = config.EVALS_DIR / "results.md"
+
+
+def results_file(tag: str) -> Path:
+    """results.md for the default run set, results-<tag>.md for others (so scoring one never overwrites another)."""
+    return RESULTS_FILE if tag == "default" else config.EVALS_DIR / f"results-{tag}.md"
 README = config.ROOT / "README.md"
 README_START, README_END = "<!-- EVAL_RESULTS:START -->", "<!-- EVAL_RESULTS:END -->"
 
@@ -330,11 +335,11 @@ def cmd_score(tag: str) -> int:
         print(f"No runs in {RUNS_DIR / tag}. Run `python -m evals.run_evals run` first.", file=sys.stderr)
         return 1
     m = compute_metrics(runs, load_labels(), load_repos())
-    RESULTS_FILE.write_text(render_results(m, tag, runs), encoding="utf-8")
+    results_file(tag).write_text(render_results(m, tag, runs), encoding="utf-8")
     if m.off.labeled and tag == "default":
         update_readme(summary_table(m))
     print(summary_table(m))
-    print(f"\nWrote {RESULTS_FILE}")
+    print(f"\nWrote {results_file(tag)}")
     if not m.off.labeled:
         print("No labels yet: precision is n/a. Run `python -m evals.run_evals label`.")
     return 0

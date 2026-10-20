@@ -3,8 +3,9 @@
 All tools are hardened against the scanned repo:
 - Python runs in isolated mode (-I) from a neutral directory, so modules planted in the repo
   (e.g. ``bandit/__main__.py``) can never shadow the real tool.
-- Our own config only, suppression comments ignored, secrets stripped from the environment,
-  hard timeouts that kill the whole process tree.
+- Our own config only (the repo's config files are ignored), secrets stripped from the environment,
+  hard timeouts that kill the whole process tree. Security scanners (bandit, Semgrep) also ignore
+  suppression comments; ruff, which only feeds Quality/Bug Hunter hints, respects inline `# noqa`.
 No tool executes the code it scans.
 """
 
@@ -101,7 +102,7 @@ def run_ruff(root: Path, targets: list[str] | None = None) -> list[ToolFinding]:
     if not paths:
         return []
     cmd = [
-        find_ruff_bin(), "check", *paths, "--isolated", "--ignore-noqa", "--no-cache",
+        find_ruff_bin(), "check", *paths, "--isolated", "--no-cache",
         "--output-format", "json", "--select", config.RUFF_RULES, "--exit-zero",
     ]
     data = _run_json("ruff", cmd, cwd)

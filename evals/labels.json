@@ -3,6 +3,22 @@
     "verdict": "false",
     "gt_id": null
   },
+  "010f6173cde12f01": {
+    "verdict": "real",
+    "gt_id": "GT-3"
+  },
+  "0114090a89471c8d": {
+    "verdict": "real",
+    "gt_id": "GT-1"
+  },
+  "02118f5b01a6904e": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "0437431fcbf0fe3d": {
+    "verdict": "real",
+    "gt_id": null
+  },
   "064b5a2cc42e2f05": {
     "verdict": "false",
     "gt_id": null
@@ -19,11 +35,23 @@
     "verdict": "false",
     "gt_id": null
   },
+  "1a2ff9beb3cba2e6": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "1a7bce3e94fccac4": {
+    "verdict": "false",
+    "gt_id": null
+  },
   "1ae330c722ed5d99": {
     "verdict": "false",
     "gt_id": null
   },
   "1b2e7dcc6c6e631b": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "1c53ee7a4c75cfb5": {
     "verdict": "false",
     "gt_id": null
   },
@@ -51,6 +79,10 @@
     "verdict": "false",
     "gt_id": null
   },
+  "27877871711b5763": {
+    "verdict": "real",
+    "gt_id": null
+  },
   "29f387b3356a5dca": {
     "verdict": "real",
     "gt_id": "GT-1"
@@ -67,6 +99,18 @@
     "verdict": "false",
     "gt_id": null
   },
+  "3dca6e55cd0537c4": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "3ebaa053bc96d946": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "42083e5b66c56f91": {
+    "verdict": "real",
+    "gt_id": "GT-5"
+  },
   "46563cdc4ce28792": {
     "verdict": "false",
     "gt_id": null
@@ -74,6 +118,10 @@
   "482e207dfecd070e": {
     "verdict": "real",
     "gt_id": "GT-1"
+  },
+  "4c4a71ab9a7a25fd": {
+    "verdict": "real",
+    "gt_id": "GT-4"
   },
   "5189cb29a3e59ab9": {
     "verdict": "real",
@@ -86,6 +134,10 @@
   "563a0ed9c7e0287a": {
     "verdict": "false",
     "gt_id": null
+  },
+  "5a73cea99fcaa12f": {
+    "verdict": "real",
+    "gt_id": "GT-2"
   },
   "5f38e74ca3dfc6f7": {
     "verdict": "false",
@@ -115,6 +167,10 @@
     "verdict": "false",
     "gt_id": null
   },
+  "7a89d18be5e326f4": {
+    "verdict": "false",
+    "gt_id": null
+  },
   "7f61d3590f6ae566": {
     "verdict": "real",
     "gt_id": "GT-1"
@@ -131,7 +187,27 @@
     "verdict": "real",
     "gt_id": null
   },
+  "83bb5a7b205b69e9": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "854e4258bd4e5dbc": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "8731e5c3eb8693ae": {
+    "verdict": "real",
+    "gt_id": null
+  },
   "8a5988a46a8d97b0": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "8b21ae4cbaf745a6": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "8fc449fcc864e4d0": {
     "verdict": "false",
     "gt_id": null
   },
@@ -154,6 +230,10 @@
   "9946409ec10fca6a": {
     "verdict": "false",
     "gt_id": null
+  },
+  "9a7d84c717e97cf2": {
+    "verdict": "real",
+    "gt_id": "GT-1"
   },
   "9fe5c6dca0663a7b": {
     "verdict": "real",
@@ -179,12 +259,24 @@
     "verdict": "real",
     "gt_id": null
   },
+  "ad8c47d729da11e8": {
+    "verdict": "real",
+    "gt_id": null
+  },
   "aea642fcad7a8677": {
     "verdict": "false",
     "gt_id": null
   },
+  "b0a986364b15d916": {
+    "verdict": "real",
+    "gt_id": null
+  },
   "b16238657218b4d4": {
     "verdict": "false",
+    "gt_id": null
+  },
+  "b467655b2073c56c": {
+    "verdict": "real",
     "gt_id": null
   },
   "b5784cf8255a3668": {
@@ -199,6 +291,10 @@
     "verdict": "false",
     "gt_id": null
   },
+  "c3c3c808df422909": {
+    "verdict": "real",
+    "gt_id": "GT-3"
+  },
   "c417808a9e42066e": {
     "verdict": "real",
     "gt_id": null
@@ -208,6 +304,14 @@
     "gt_id": null
   },
   "c687f93a34a1f4dc": {
+    "verdict": "real",
+    "gt_id": "GT-1"
+  },
+  "c9b7183198521ebd": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "cef427a26c96f661": {
     "verdict": "real",
     "gt_id": "GT-1"
   },
@@ -223,6 +327,14 @@
     "verdict": "false",
     "gt_id": null
   },
+  "d0514b235bda5b73": {
+    "verdict": "real",
+    "gt_id": "GT-2"
+  },
+  "d3673c80e2a0104f": {
+    "verdict": "real",
+    "gt_id": null
+  },
   "d5b5bd9b17a1ea42": {
     "verdict": "false",
     "gt_id": null
@@ -232,6 +344,10 @@
     "gt_id": null
   },
   "d8c9069c1c64fc15": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "d98aa791f726fe2a": {
     "verdict": "false",
     "gt_id": null
   },
@@ -255,9 +371,17 @@
     "verdict": "false",
     "gt_id": null
   },
+  "e65c9bf10426d8a2": {
+    "verdict": "false",
+    "gt_id": null
+  },
   "e84710ce507b2493": {
     "verdict": "false",
     "gt_id": null
+  },
+  "ec3cac9a77a3a8cc": {
+    "verdict": "real",
+    "gt_id": "GT-1"
   },
   "ef142d164e32428f": {
     "verdict": "false",
@@ -271,6 +395,10 @@
     "verdict": "false",
     "gt_id": null
   },
+  "f01d79c4b974a80c": {
+    "verdict": "false",
+    "gt_id": null
+  },
   "f301f18528a66097": {
     "verdict": "false",
     "gt_id": null
@@ -278,6 +406,10 @@
   "f6bb5070a33af2dd": {
     "verdict": "real",
     "gt_id": "GT-1"
+  },
+  "fa53c1bf3dcd9b01": {
+    "verdict": "real",
+    "gt_id": "GT-2"
   },
   "fcdab7f826ba99f2": {
     "verdict": "real",

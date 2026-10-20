@@ -1,0 +1,188 @@
+{
+  "run_id": "2a8e7ad59b3b",
+  "repo": "stamparm/dsvw",
+  "commit": "9ca3c9acf3defa0a6148d40e5f5cebeb5dcbb908",
+  "pipeline_version": "9",
+  "model": "gemini-3.5-flash-lite",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "python"
+    ],
+    "assignments": {
+      "architect": [
+        "README.md",
+        "Dockerfile",
+        "requirements.txt",
+        "dsvw.py"
+      ],
+      "security": [
+        "dsvw.py",
+        "tests/test_cases.py",
+        "tests/test_regressions.py",
+        "tests/harness.py",
+        "tests/test_exploitability.py",
+        ".github/workflows/tests.yml",
+        "Dockerfile",
+        "docker-compose.yml",
+        "tests/fixture.py"
+      ],
+      "quality": [
+        "dsvw.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": [
+        "tests/test_regressions.py"
+      ],
+      "tests": [],
+      "vendored": []
+    }
+  },
+  "tool_hits": 31,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "SEC-1",
+      "file": "dsvw.py",
+      "line": 22,
+      "severity": "high",
+      "issue": "SQL injection via string concatenation",
+      "evidence": "                    cursor.execute(\"SELECT id, username, name, surname FROM users WHERE id=\" + params[\"id\"])",
+      "fix": "Use parameterized queries like cursor.execute(\"SELECT id, username, name, surname FROM users WHERE id=?\", (params[\"id\"],))",
+      "source": "security"
+    },
+    {
+      "id": "SEC-2",
+      "file": "dsvw.py",
+      "line": 27,
+      "severity": "high",
+      "issue": "Unsafe deserialization using pickle.loads on untrusted input",
+      "evidence": "                    content = str(pickle.loads(urllib.parse.unquote_to_bytes(re.search(r\"(?:\\A|[?&])object=([^&]+)\", query).group(1))))",
+      "fix": "Avoid using pickle for untrusted data; use safer serialization formats like JSON.",
+      "source": "security"
+    },
+    {
+      "id": "SEC-3",
+      "file": "dsvw.py",
+      "line": 31,
+      "severity": "high",
+      "issue": "Command injection via subprocess with shell=True",
+      "evidence": "                    content = subprocess.run(\"nslookup \" + params[\"domain\"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE, text=True, errors=\"replace\").stdout",
+      "fix": "Use subprocess.run without shell=True and pass arguments as a list.",
+      "source": "security"
+    },
+    {
+      "id": "SEC-4",
+      "file": "dsvw.py",
+      "line": 42,
+      "severity": "high",
+      "issue": "SQL injection via string formatting",
+      "evidence": "                        cursor.execute(\"INSERT INTO comments VALUES(NULL, '%s', '%s')\" % (params[\"comment\"], time.ctime()))",
+      "fix": "Use parameterized queries",
+      "source": "security"
+    },
+    {
+      "id": "SEC-5",
+      "file": "dsvw.py",
+      "line": 49,
+      "severity": "high",
+      "issue": "Arbitrary code execution via exec()",
+      "evidence": "                    try: exec(program, envs)",
+      "fix": "Avoid executing arbitrary code from untrusted inputs.",
+      "source": "security"
+    },
+    {
+      "id": "SEC-6",
+      "file": "dsvw.py",
+      "line": 61,
+      "severity": "high",
+      "issue": "SQL injection via string concatenation in authentication query",
+      "evidence": "                found = bool(cursor.execute(\"SELECT * FROM users WHERE username='\" + re.sub(r\"[^\\w]\", \"\", params.get(\"username\", \"\")) + \"' AND password='\" + params.get(\"password\", \"\") + \"'\").fetchall())",
+      "fix": "Use parameterized queries for SQL operations.",
+      "source": "security"
+    },
+    {
+      "id": "SEC-7",
+      "file": "tests/fixture.py",
+      "line": 13,
+      "severity": "high",
+      "issue": "subprocess execution with shell=True and untrusted input",
+      "evidence": "    print(\"<pre>%s</pre>\" % subprocess.check_output(params[\"cmd\"], shell=True, stderr=subprocess.STDOUT).decode())",
+      "fix": "Avoid using shell=True and pass command arguments as a list without shell execution.",
+      "source": "security"
+    }
+  ],
+  "confirmed_ids": [
+    "SEC-1",
+    "SEC-2",
+    "SEC-3",
+    "SEC-4",
+    "SEC-5",
+    "SEC-7"
+  ],
+  "rejected": [
+    {
+      "id": "SEC-6",
+      "stage": "llm",
+      "reason": "The username input is sanitized using re.sub(r'[^\\w]', '', ...) preventing SQL injection on the username field, and this is an intentionally vulnerable test application anyway."
+    }
+  ],
+  "architecture": {
+    "summary": "Damn Small Vulnerable Web (DSVW) is a deliberately vulnerable web application implemented in under 100 lines of Python code for educational purposes and testing. It supports a wide variety of common web application vulnerabilities and attacks, and includes a comprehensive regression test suite.",
+    "modules": [
+      {
+        "name": "dsvw.py",
+        "purpose": "Main web application and server implementation containing all vulnerabilities and routes in under 100 lines of code."
+      },
+      {
+        "name": "tests/harness.py",
+        "purpose": "Test harness used to run regression and exploitability tests against the DSVW server."
+      },
+      {
+        "name": "tests/test_cases.py",
+        "purpose": "Contains specific attack and vulnerability test cases."
+      },
+      {
+        "name": "tests/fixture.py",
+        "purpose": "Provides local HTTP fixtures for testing third-party interactions offline."
+      }
+    ],
+    "entry_points": [
+      "dsvw.py",
+      "python3 dsvw.py"
+    ],
+    "dependencies": [
+      "lxml"
+    ]
+  },
+  "score": {
+    "score": 40,
+    "per_kloc": 4.73,
+    "counts": {
+      "high": 6,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "stats": {
+    "seconds": 61.0,
+    "llm_calls": 10,
+    "llm_errors": 0,
+    "llm_seconds": 20.4,
+    "verifier_seconds": 17.5,
+    "verifier_calls": 3,
+    "models_used": {
+      "gemini-3.5-flash-lite": 10
+    }
+  },
+  "warnings": [
+    "1 large files were only partly reviewed (truncated): tests/test_regressions.py"
+  ]
+}

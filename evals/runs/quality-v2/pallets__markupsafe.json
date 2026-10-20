@@ -1,0 +1,122 @@
+{
+  "run_id": "9a1dddabd469",
+  "repo": "pallets/markupsafe",
+  "commit": "4e111271b1494995708a9e878a10829b5e10c7ba",
+  "pipeline_version": "9",
+  "model": "gemini-3.5-flash-lite",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "python"
+    ],
+    "assignments": {
+      "architect": [
+        "README.md",
+        "pyproject.toml",
+        "setup.py",
+        "bench.py",
+        "src/markupsafe/__init__.py",
+        "docs/conf.py",
+        "src/markupsafe/_native.py"
+      ],
+      "security": [
+        "tests/test_markupsafe.py",
+        "bench.py",
+        ".pre-commit-config.yaml",
+        ".github/ISSUE_TEMPLATE/config.yml",
+        "src/markupsafe/__init__.py",
+        "pyproject.toml",
+        ".github/workflows/publish.yaml",
+        ".github/workflows/tests.yaml",
+        "setup.py",
+        "docs/conf.py",
+        ".github/workflows/pre-commit.yaml",
+        ".github/workflows/lock.yaml",
+        ".github/workflows/zizmor.yaml",
+        ".devcontainer/on-create-command.sh",
+        ".devcontainer/devcontainer.json",
+        ".readthedocs.yaml",
+        "src/markupsafe/_native.py",
+        "tests/test_escape.py"
+      ],
+      "quality": [
+        "bench.py",
+        "src/markupsafe/__init__.py",
+        "setup.py",
+        "docs/conf.py",
+        "src/markupsafe/_native.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": [],
+      "tests": [
+        "tests/conftest.py",
+        "tests/test_ext_init.py",
+        "tests/test_leak.py",
+        "tests/test_exception_custom_html.py"
+      ],
+      "vendored": []
+    }
+  },
+  "tool_hits": 7,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [],
+  "confirmed_ids": [],
+  "rejected": [],
+  "architecture": {
+    "summary": "MarkupSafe is a Python library that implements a text object with HTML/XML character escaping capabilities to mitigate injection attacks. It provides a `Markup` string subclass along with utility functions like `escape`, `escape_silent`, and `soft_str`, with optional performance speedups implemented via a C extension.",
+    "modules": [
+      {
+        "name": "markupsafe.__init__",
+        "purpose": "Provides the primary `Markup` string class, `escape`, `escape_silent`, and `soft_str` functions."
+      },
+      {
+        "name": "markupsafe._native",
+        "purpose": "Provides the pure Python fallback implementation for character escaping."
+      },
+      {
+        "name": "markupsafe._speedups",
+        "purpose": "Provides a high-performance C extension implementation for character escaping."
+      }
+    ],
+    "entry_points": [],
+    "dependencies": [
+      "setuptools",
+      "pytest",
+      "sphinx",
+      "pallets-sphinx-themes",
+      "ruff",
+      "mypy",
+      "tox"
+    ]
+  },
+  "score": {
+    "score": 100,
+    "per_kloc": 0.0,
+    "counts": {
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "stats": {
+    "seconds": 28.9,
+    "llm_calls": 5,
+    "llm_errors": 0,
+    "llm_seconds": 7.0,
+    "verifier_seconds": 0.0,
+    "verifier_calls": 0,
+    "models_used": {
+      "gemini-3.5-flash-lite": 5
+    }
+  },
+  "warnings": [
+    "4 test file(s) without scanner hits not reviewed by the AI agents: tests/conftest.py, tests/test_ext_init.py, tests/test_leak.py, tests/test_exception_custom_html.py"
+  ]
+}

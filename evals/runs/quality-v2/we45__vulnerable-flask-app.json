@@ -1,0 +1,196 @@
+{
+  "run_id": "3c4fa1c1792e",
+  "repo": "we45/vulnerable-flask-app",
+  "commit": "b6a4f97afd466e83e1f60781494252dec1c37039",
+  "pipeline_version": "9",
+  "model": "gemini-3.5-flash-lite",
+  "verified": true,
+  "bug_hunter": false,
+  "degraded": false,
+  "plan": {
+    "languages": [
+      "python"
+    ],
+    "assignments": {
+      "architect": [
+        "README.md",
+        "Dockerfile",
+        "app/app.py"
+      ],
+      "security": [
+        "app/app.py",
+        "tests/e2e_zap.py",
+        ".github/workflows/zap_test.yml",
+        "old-workflows/semgrep.yml",
+        "Dockerfile"
+      ],
+      "quality": [
+        "app/app.py"
+      ]
+    },
+    "skipped": {
+      "not_selected": [],
+      "security_over_budget": [],
+      "quality_over_budget": [],
+      "truncated": [],
+      "tests": [],
+      "vendored": []
+    }
+  },
+  "tool_hits": 25,
+  "duplicates_dropped": [],
+  "invalid_items_dropped": 0,
+  "raw_findings": [
+    {
+      "id": "SEC-1",
+      "file": "app/app.py",
+      "line": 261,
+      "severity": "high",
+      "issue": "SQL injection vector through string-based query construction",
+      "evidence": "str_query = \"SELECT first_name, last_name, username FROM customer WHERE username = '%s';\" % search_term",
+      "fix": "Use parameterized queries or ORM filtering instead of string formatting",
+      "source": "security"
+    },
+    {
+      "id": "SEC-2",
+      "file": "app/app.py",
+      "line": 329,
+      "severity": "high",
+      "issue": "Use of unsafe yaml.load which allows instantiation of arbitrary objects",
+      "evidence": "ydata = yaml.load(y)",
+      "fix": "Use yaml.safe_load(y)",
+      "source": "security"
+    },
+    {
+      "id": "SEC-3",
+      "file": "app/app.py",
+      "line": 141,
+      "severity": "medium",
+      "issue": "Use of weak MD5 hash for security-sensitive operations (password hashing)",
+      "evidence": "hash_pass = hashlib.md5(password).hexdigest()",
+      "fix": "Use a strong hashing algorithm like bcrypt, Argon2, or PBKDF2",
+      "source": "security"
+    },
+    {
+      "id": "SEC-4",
+      "file": "app/app.py",
+      "line": 97,
+      "severity": "medium",
+      "issue": "JWT token is decoded without verification",
+      "evidence": "decoded = jwt.decode(token, verify = False)",
+      "fix": "Enable verification with jwt.decode(token, key, verify=True, algorithms=['HS256'])",
+      "source": "security"
+    },
+    {
+      "id": "QUAL-1",
+      "file": "app/app.py",
+      "line": 208,
+      "severity": "high",
+      "issue": "customer_record is accessed for its attributes before checking if it is None, which will raise an AttributeError when a customer is not found",
+      "evidence": "customer_record = Customer.query.get(customer_id)\ncustomer_dict = {'id': customer_record.id, 'firstname': customer_record.first_name,",
+      "fix": "Check if customer_record is None before accessing its attributes",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-2",
+      "file": "app/app.py",
+      "line": 308,
+      "severity": "high",
+      "issue": "Variable 'para' is referenced outside the loop and may raise an UnboundLocalError if the uploaded document has no paragraphs",
+      "evidence": "    # return \"file uploaded successfully\"\n    return render_template('view.html', name=para.text)",
+      "fix": "Initialize 'para' or handle the empty document case properly",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-3",
+      "file": "app/app.py",
+      "line": 148,
+      "severity": "medium",
+      "issue": "Exception object 'e' may not have a 'message' attribute in Python 3, causing an AttributeError in the error response handler",
+      "evidence": "    except Exception as e:\n        return jsonify({'Error': str(e.message)}),404",
+      "fix": "Use str(e) instead of str(e.message)",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-4",
+      "file": "app/app.py",
+      "line": 167,
+      "severity": "medium",
+      "issue": "Exception object 'e' may not have a 'message' attribute in Python 3, causing an AttributeError in the error response handler",
+      "evidence": "    except Exception as e:\n        return jsonify({'Error': str(e.message)}),404",
+      "fix": "Use str(e) instead of str(e.message)",
+      "source": "quality"
+    },
+    {
+      "id": "QUAL-5",
+      "file": "app/app.py",
+      "line": 326,
+      "severity": "medium",
+      "issue": "Uploaded file is opened and read but never closed explicitly or via context manager properly linked to deletion/cleanup, risking resource leaks",
+      "evidence": "        with open(file_path, 'r') as yfile:\n            y = yfile.read()",
+      "fix": "Ensure proper file handling or cleanup",
+      "source": "quality"
+    }
+  ],
+  "confirmed_ids": [
+    "SEC-1",
+    "SEC-2",
+    "SEC-3",
+    "SEC-4",
+    "QUAL-1",
+    "QUAL-2",
+    "QUAL-3",
+    "QUAL-4"
+  ],
+  "rejected": [
+    {
+      "id": "QUAL-5",
+      "stage": "llm",
+      "reason": "The file is opened inside a 'with' statement, which properly closes the file upon exiting the block."
+    }
+  ],
+  "architecture": {
+    "summary": "This is a vulnerable Python-based web application built with Flask, SQLAlchemy, and Tornado. It includes HTML templates, database models for users and customers, and security testing configurations for ZAP. The project uses Python 2.7 and is packaged with a Dockerfile for deployment.",
+    "modules": [
+      {
+        "name": "app/app.py",
+        "purpose": "Main Flask application containing routes, database models, JWT verification, and server configuration using Tornado."
+      }
+    ],
+    "entry_points": [
+      "app/app.py",
+      "python app.py"
+    ],
+    "dependencies": [
+      "flask",
+      "flask_sqlalchemy",
+      "jwt",
+      "faker",
+      "werkzeug",
+      "docx",
+      "yaml",
+      "tornado"
+    ]
+  },
+  "score": {
+    "score": 44,
+    "per_kloc": 8.0,
+    "counts": {
+      "high": 4,
+      "medium": 4,
+      "low": 0
+    }
+  },
+  "stats": {
+    "seconds": 29.5,
+    "llm_calls": 5,
+    "llm_errors": 0,
+    "llm_seconds": 12.3,
+    "verifier_seconds": 6.4,
+    "verifier_calls": 1,
+    "models_used": {
+      "gemini-3.5-flash-lite": 5
+    }
+  },
+  "warnings": []
+}
