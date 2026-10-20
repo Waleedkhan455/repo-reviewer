@@ -100,3 +100,64 @@ def test_bug_hunter_runs_never_overwrite_baseline(monkeypatch):
     monkeypatch.setattr(run_evals, "cmd_score", lambda tag: 0)
     run_evals.main(["run", "--bug-hunter"])
     assert seen["tag"] == "bughunter"
+
+
+def test_recall_is_unmeasured_not_zero_without_labels():
+    """Regression: with ground truth but no labels, results.md showed recall '0%' instead of 'n/a'."""
+    d = _data("a/b", [_f("SEC-1", 1)], confirmed=["SEC-1"])
+    repos = [EvalRepo(url="https://github.com/a/b", commit="c" * 40, kind="vulnerable", ground_truth=[
+        {"id": "GT-1", "file": "app.py", "category": "security", "description": "x"}])]
+    m = compute_metrics([d], {}, repos)
+    assert m.recall(m.off) is None and m.recall(m.on) is None
+    assert "| No Verifier | n/a | n/a |" in summary_table(m)
+    assert "n/a (unlabeled)" in run_evals.render_results(m, "default", [d])
+    labeled = compute_metrics([d], {fingerprint(d, d.raw_findings[0]): Label(verdict="false")}, repos)
+    assert labeled.recall(labeled.off) == 0.0  # labeled but nothing matched: a real 0%
+
+
+def test_results_report_the_models_that_actually_answered():
+    """Regression: results.md printed the configured model, while every call fell back to another one."""
+    d = _data("a/b", [], confirmed=[])
+    old = run_evals.run_provenance([d])
+    assert "pipeline v1" in old and "not recorded" in old
+    d = d.model_copy(update={"stats": d.stats.model_copy(update={"models_used": {"lite": 9, "flash": 1}})})
+    assert run_evals.run_provenance([d]) == "pipeline v1 · models that answered: `lite` (9 calls), `flash` (1 calls)"
+
+
+def _gt_repo(slug, n):
+    return EvalRepo(url=f"https://github.com/{slug}", commit="c" * 40, kind="vulnerable", ground_truth=[
+        {"id": f"GT-{i}", "file": "app.py", "category": "security", "description": "x"} for i in range(1, n + 1)])
+
+
+def test_verifier_dropping_every_labeled_true_positive_shows_a_real_drop():
+    """Regression: ON recall was 'n/a' when the Verifier rejected all labeled findings."""
+    d = _data("a/b", [_f("SEC-1", 1)], confirmed=[])
+    labels = {fingerprint(d, d.raw_findings[0]): Label(verdict="real", gt_id="GT-1")}
+    m = compute_metrics([d], labels, [_gt_repo("a/b", 2)])
+    assert m.recall(m.off) == 0.5 and m.recall(m.on) == 0.0
+
+
+def test_partial_labeling_counts_only_labeled_repos():
+    """Regression: overall recall divided by ground truth of repos nobody had labeled yet."""
+    labeled = _data("a/b", [_f("SEC-1", 1)], confirmed=["SEC-1"])
+    unlabeled = _data("c/d", [_f("SEC-2", 2)], confirmed=["SEC-2"])
+    labels = {fingerprint(labeled, labeled.raw_findings[0]): Label(verdict="real", gt_id="GT-1")}
+    m = compute_metrics([labeled, unlabeled], labels, [_gt_repo("a/b", 1), _gt_repo("c/d", 9)])
+    assert (m.measured_gt, m.total_gt) == (1, 10)
+    assert m.recall(m.off) == 1.0
+    assert "1 of 10 counted so far" in run_evals.render_results(m, "default", [labeled, unlabeled])
+
+
+def test_repo_with_no_findings_is_a_measured_miss():
+    """Regression: a GT repo where the tool found nothing showed 'n/a (unlabeled)' forever."""
+    d = _data("c/d", [], confirmed=[])
+    m = compute_metrics([d], {}, [_gt_repo("c/d", 3)])
+    assert m.recall(m.off) == 0.0
+    assert "0/3" in run_evals.render_results(m, "default", [d])
+
+
+def test_provenance_flags_runs_without_model_records():
+    new = _data("a/b", [], confirmed=[])
+    new = new.model_copy(update={"stats": new.stats.model_copy(update={"models_used": {"lite": 6}})})
+    old = _data("c/d", [], confirmed=[])
+    assert run_evals.run_provenance([new, old]).endswith("`lite` (6 calls) (not recorded for 1 runs)")

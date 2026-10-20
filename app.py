@@ -12,12 +12,11 @@ from dataclasses import dataclass
 
 import streamlit as st
 
-from src import config
-from src.llm import LLMError
+from src import config, service
 from src.logger import log_event, read_trace
-from src.orchestrator import ReviewError, ReviewOptions, ReviewResult, lookup_cache, run_review
 from src.quota import Quota
-from src.repo import RepoError, canonicalize
+from src.repo import canonicalize
+from src.service import LLMError, RepoError, ReviewError, ReviewOptions, ReviewResult
 
 st.set_page_config(page_title="Repo Reviewer", page_icon="🔎", layout="wide")
 
@@ -66,7 +65,7 @@ def review(url: str, bug_hunter: bool) -> Outcome:
         if not quota.try_lookup():
             return Outcome(level="warning", message="The server is busy. Please try again in a minute.")
         try:
-            lookup = lookup_cache(url, opts)
+            lookup = service.find_cached_review(url, opts)
         finally:
             quota.end_lookup()
     except RepoError as exc:
@@ -81,7 +80,7 @@ def review(url: str, bug_hunter: bool) -> Outcome:
     try:
         with st.status("Reviewing repository...", expanded=True) as status:
             # Reuse the commit resolved above: no second ls-remote, and the cache key is unchanged.
-            result = run_review(url, ReviewOptions(bug_hunter=bug_hunter, commit=lookup.commit),
+            result = service.review_repo(url, ReviewOptions(bug_hunter=bug_hunter, commit=lookup.commit),
                                 progress=status.write)
             status.update(label="Review complete", state="complete", expanded=False)
         return Outcome(result=result)

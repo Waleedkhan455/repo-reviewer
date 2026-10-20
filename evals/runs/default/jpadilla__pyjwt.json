@@ -225,7 +225,10 @@
     "llm_errors": 0,
     "llm_seconds": 33.9,
     "verifier_seconds": 25.0,
-    "verifier_calls": 5
+    "verifier_calls": 5,
+    "models_used": {
+      "gemini-3.5-flash-lite": 18
+    }
   },
   "warnings": [
     "2 large files were only partly reviewed (truncated): jwt/api_jwt.py, jwt/algorithms.py"

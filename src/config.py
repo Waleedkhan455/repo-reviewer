@@ -3,7 +3,11 @@
 Values can be overridden with environment variables (or a local .env file).
 """
 
+import getpass
 import os
+import stat
+import sys
+import tempfile
 from pathlib import Path
 
 from dotenv import dotenv_values
@@ -92,13 +96,66 @@ VERIFY_WORKERS = 3
 
 # --- Paths -------------------------------------------------------------------
 PROMPTS_DIR = ROOT / "prompts"
-LOGS_DIR = ROOT / "logs"
+
+
+def _is_writable(directory: Path) -> bool:
+    """Probe with a uniquely named temp file (O_EXCL, random name), so concurrent processes never
+    collide and a pre-planted file or symlink is never opened."""
+    try:
+        directory.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(dir=directory, prefix=".rr-write-test-"):
+            pass
+        return True
+    except OSError:
+        return False
+
+
+def _private_temp_dir() -> Path | None:
+    """A per-user directory under the system temp folder that only this user can use.
+
+    On a shared host another user could pre-create a predictable /tmp path to plant cache entries or
+    symlinks, so on POSIX it must be a real directory owned by us with no group/other permissions.
+    """
+    user = os.getuid() if hasattr(os, "getuid") else getpass.getuser()
+    path = Path(tempfile.gettempdir()) / f"repo-reviewer-{user}"
+    try:
+        path.mkdir(mode=0o700, exist_ok=True)
+        if hasattr(os, "getuid"):
+            st = os.lstat(path)
+            if not stat.S_ISDIR(st.st_mode) or st.st_uid != os.getuid() or st.st_mode & 0o077:
+                return None
+    except OSError:
+        return None
+    return path if _is_writable(path) else None
+
+
+def _data_dir() -> Path:
+    """Where logs, the review cache and CLI reports are written.
+
+    RR_DATA_DIR if set (relative paths are relative to the project), else the project folder when it is
+    writable, else a private per-user temp folder (hosted platforms may mount the code read-only).
+    """
+    configured = _env("RR_DATA_DIR")
+    if configured:
+        path = Path(configured)
+        path = path if path.is_absolute() else ROOT / path
+        if _is_writable(path):
+            return path
+        print(f"repo-reviewer: RR_DATA_DIR={configured!r} is not writable; using a fallback location",
+              file=sys.stderr)
+    if _is_writable(ROOT):
+        return ROOT
+    return _private_temp_dir() or Path(tempfile.mkdtemp(prefix="repo-reviewer-"))
+
+
+DATA_DIR = _data_dir()
+LOGS_DIR = DATA_DIR / "logs"
 TRACE_FILE = LOGS_DIR / "trace.jsonl"
 TRACE_MAX_BYTES = 5_000_000  # rotate the trace log above this size
 TRACE_VIEW_MAX_EVENTS = 500
 ERROR_LOG_CHARS = 300
-REPORTS_DIR = ROOT / "reports"
-CACHE_DIR = ROOT / ".cache" / "reviews"
+REPORTS_DIR = DATA_DIR / "reports"  # CLI default output (--out overrides)
+CACHE_DIR = DATA_DIR / ".cache" / "reviews"
 CACHE_MAX_ENTRIES = 200
 EVALS_DIR = ROOT / "evals"
 

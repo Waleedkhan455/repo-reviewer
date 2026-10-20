@@ -9,3 +9,4 @@ logs/
 reports/
 .cache/
 .streamlit/secrets.toml
+.rr-write-test-*

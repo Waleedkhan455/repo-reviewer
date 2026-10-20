@@ -18,7 +18,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "S105", "S106", "S108"]
+"tests/**" = ["S101", "S103", "S105", "S106", "S108"]  # S103: tests simulate attacker-planted permissive dirs
 
 [tool.ruff.lint.mccabe]
 max-complexity = 12

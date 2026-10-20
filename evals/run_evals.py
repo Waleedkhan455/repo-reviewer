@@ -20,11 +20,11 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from src import config
-from src.llm import LLMError
-from src.orchestrator import ReviewError, ReviewOptions, dedupe, run_review
-from src.repo import RepoError, canonicalize
+from src import config, service
+from src.orchestrator import dedupe
+from src.repo import canonicalize
 from src.schemas import Finding, ReviewData
+from src.service import LLMError, RepoError, ReviewError, ReviewOptions
 
 REPOS_FILE = config.EVALS_DIR / "repos.json"
 RUNS_DIR = config.EVALS_DIR / "runs"
@@ -97,7 +97,7 @@ def cmd_run(tag: str, bug_hunter: bool, only: str | None) -> int:
             continue
         print(f"=== {r.slug} @ {r.commit[:10]}", file=sys.stderr)
         try:
-            result = run_review(r.url, ReviewOptions(verify=True, bug_hunter=bug_hunter, commit=r.commit),
+            result = service.review_repo(r.url, ReviewOptions(verify=True, bug_hunter=bug_hunter, commit=r.commit),
                                 progress=lambda msg: print(f"    ... {msg}", file=sys.stderr))
         except (RepoError, LLMError, ReviewError) as exc:
             print(f"    FAILED: {exc}", file=sys.stderr)
@@ -180,6 +180,7 @@ class Metrics:
     off: ConfigStats
     on: ConfigStats
     total_gt: int
+    measured_gt: int  # ground truth of repos whose findings are labeled (or that had nothing to label)
     raw: int  # findings a --no-verify run would report (raw, after the same cross-agent dedupe)
     confirmed: int
     verifier_rejected: int
@@ -195,13 +196,20 @@ class Metrics:
         return self.verifier_rejected / total if total else None
 
     def recall(self, cfg: ConfigStats) -> float | None:
-        return len(cfg.matched_gt) / self.total_gt if self.total_gt else None
+        """Share of ground truth found, over measured repos only (None while no repo with GT is measured).
+
+        A repo is measured once its findings are labeled, or when it produced no findings (a real miss).
+        The same repos count for Verifier OFF and ON, so a Verifier that drops every labeled true positive
+        shows a real drop rather than "n/a".
+        """
+        return len(cfg.matched_gt) / self.measured_gt if self.measured_gt else None
 
 
 def compute_metrics(runs: list[ReviewData], labels: dict[str, Label], repos: list[EvalRepo]) -> Metrics:
     gt_count = {r.slug: len(r.ground_truth) for r in repos}
     off, on = ConfigStats(), ConfigStats()
     per_repo = []
+    measured_gt = 0
     for d in runs:
         confirmed = set(d.confirmed_ids)
         baseline, _ = dedupe(d.raw_findings)  # what a real --no-verify run reports
@@ -213,10 +221,13 @@ def compute_metrics(runs: list[ReviewData], labels: dict[str, Label], repos: lis
             if f.id in confirmed:
                 for cfg in (on, r_on):
                     cfg.add(label, d.repo)
-        per_repo.append({"repo": d.repo, "raw": r_off.reported, "confirmed": r_on.reported,
+        measured = r_off.labeled > 0 or r_off.reported == 0
+        measured_gt += gt_count.get(d.repo, 0) if measured else 0
+        per_repo.append({"repo": d.repo, "raw": r_off.reported, "confirmed": r_on.reported, "measured": measured,
                          "p_off": r_off.precision(), "p_on": r_on.precision(),
-                         "gt": gt_count.get(d.repo, 0), "found_off": len(r_off.matched_gt),
-                         "found_on": len(r_on.matched_gt), "seconds": d.stats.seconds,
+                         "gt": gt_count.get(d.repo, 0), "labeled": r_off.labeled,
+                         "found_off": len(r_off.matched_gt), "found_on": len(r_on.matched_gt),
+                         "seconds": d.stats.seconds,
                          "llm_calls": d.stats.llm_calls})
     n = max(len(runs), 1)
 
@@ -226,6 +237,7 @@ def compute_metrics(runs: list[ReviewData], labels: dict[str, Label], repos: lis
     return Metrics(
         off=off, on=on,
         total_gt=sum(gt_count.get(d.repo, 0) for d in runs),
+        measured_gt=measured_gt,
         raw=off.reported, confirmed=on.reported,
         verifier_rejected=sum(len(d.rejected) for d in runs),
         avg_seconds_off=avg([d.stats.seconds - d.stats.verifier_seconds for d in runs]),
@@ -251,19 +263,36 @@ def summary_table(m: Metrics) -> str:
     ])
 
 
-def render_results(m: Metrics, tag: str, repos_run: int) -> str:
+def run_provenance(runs: list[ReviewData]) -> str:
+    """Pipeline version(s) and the models that actually answered, taken from the runs themselves."""
+    versions = ", ".join(f"v{v}" for v in sorted({d.pipeline_version for d in runs}))
+    used: dict[str, int] = {}
+    for d in runs:
+        for model, n in d.stats.models_used.items():
+            used[model] = used.get(model, 0) + n
+    unrecorded = [d for d in runs if not d.stats.models_used and d.stats.llm_calls]
+    if used:
+        models = ", ".join(f"`{m}` ({n} calls)" for m, n in sorted(used.items(), key=lambda kv: -kv[1]))
+        note = f" (not recorded for {len(unrecorded)} runs)" if unrecorded else ""
+        return f"pipeline {versions} · models that answered: {models}{note}"
+    primary = ", ".join(sorted({d.model for d in runs}))
+    return f"pipeline {versions} · configured primary model `{primary}` (models actually used were not recorded)"
+
+
+def render_results(m: Metrics, tag: str, runs: list[ReviewData]) -> str:
     rejection = m.rejection_rate()
     unlabeled = m.off.reported - m.off.labeled
     lines = [
         f"# Eval Results ({tag})",
         "",
-        (f"{repos_run} repos · model `{config.MODEL_NAME}` · pipeline v{config.PIPELINE_VERSION} · "
-        f"rejection rate {_pct(rejection)} · {unlabeled} findings unlabeled or skipped (excluded from precision)"),
+        (f"{len(runs)} repos · {run_provenance(runs)} · rejection rate {_pct(rejection)} · "
+         f"{unlabeled} findings unlabeled or skipped (excluded from precision)"),
         "",
         summary_table(m),
         "",
-        ("Precision = real / labeled findings. Recall = ground-truth issues found / ground-truth issues "
-        f"({m.total_gt} total). Rules: [LABELING_RULES.md](LABELING_RULES.md)."),
+        ("Precision = real / labeled findings. Recall = ground-truth issues found / ground-truth issues of "
+         f"labeled repos ({m.measured_gt} of {m.total_gt} counted so far; repos not labeled yet are excluded). "
+         "Rules: [LABELING_RULES.md](LABELING_RULES.md)."),
         "",
         "## Per repo",
         "",
@@ -271,9 +300,14 @@ def render_results(m: Metrics, tag: str, repos_run: int) -> str:
         "|---|---|---|---|---|---|---|---|---|",
     ]
     for r in m.per_repo:
-        gt = f"/{r['gt']}" if r["gt"] else " (no GT)"
+        if not r["gt"]:
+            found_off = found_on = "no GT"
+        elif not r["measured"]:
+            found_off = found_on = "n/a (unlabeled)"
+        else:
+            found_off, found_on = f"{r['found_off']}/{r['gt']}", f"{r['found_on']}/{r['gt']}"
         lines.append(f"| {r['repo']} | {r['raw']} | {r['confirmed']} | {_pct(r['p_off'])} | {_pct(r['p_on'])} | "
-                     f"{r['found_off']}{gt} | {r['found_on']}{gt} | {r['seconds']}s | {r['llm_calls']} |")
+                     f"{found_off} | {found_on} | {r['seconds']}s | {r['llm_calls']} |")
     return "\n".join(lines) + "\n"
 
 
@@ -296,7 +330,7 @@ def cmd_score(tag: str) -> int:
         print(f"No runs in {RUNS_DIR / tag}. Run `python -m evals.run_evals run` first.", file=sys.stderr)
         return 1
     m = compute_metrics(runs, load_labels(), load_repos())
-    RESULTS_FILE.write_text(render_results(m, tag, len(runs)), encoding="utf-8")
+    RESULTS_FILE.write_text(render_results(m, tag, runs), encoding="utf-8")
     if m.off.labeled and tag == "default":
         update_readme(summary_table(m))
     print(summary_table(m))

@@ -30,15 +30,18 @@ class RunStats:
     llm_errors: int = 0
     llm_seconds: float = 0.0
     calls_by_agent: dict[str, int] = field(default_factory=dict)
+    models_used: dict[str, int] = field(default_factory=dict)  # successful calls per model
     _lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
 
-    def record_call(self, latency_s: float, ok: bool, agent: str = "") -> None:
+    def record_call(self, latency_s: float, ok: bool, agent: str = "", model: str = "") -> None:
         with self._lock:
             self.llm_calls += 1
             self.llm_seconds += latency_s
             self.calls_by_agent[agent] = self.calls_by_agent.get(agent, 0) + 1
             if not ok:
                 self.llm_errors += 1
+            elif model:
+                self.models_used[model] = self.models_used.get(model, 0) + 1
 
 
 current_run: ContextVar[RunStats | None] = ContextVar("current_run", default=None)

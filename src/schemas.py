@@ -134,6 +134,7 @@ class RunStatsOut(BaseModel):
     llm_seconds: float
     verifier_seconds: float = 0.0
     verifier_calls: int = 0
+    models_used: dict[str, int] = Field(default_factory=dict)  # model -> successful calls (what really answered)
 
 
 class RunMeta(BaseModel):

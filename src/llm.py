@@ -153,7 +153,7 @@ def call_llm(system: str, user: str, *, agent: str) -> str:
             continue
         latency = time.monotonic() - start
         if run:
-            run.record_call(latency, ok=True, agent=agent)
+            run.record_call(latency, ok=True, agent=agent, model=model)
         log_event("llm_call", agent=agent, model=model, attempt=attempt, prompt_chars=len(system) + len(user),
                   reply_chars=len(text), latency_s=round(latency, 2))
         return text

@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 from streamlit.testing.v1 import AppTest
 
-from src import orchestrator
+from src import orchestrator, service
 from src.orchestrator import ReviewResult
 from src.quota import Quota
 from src.schemas import Finding, RejectedOut
@@ -41,7 +41,7 @@ def cached_result(monkeypatch):
     data = _data("demo/app", [f], confirmed=["SEC-1"]).model_copy(update={
         "rejected": [RejectedOut(id="QUAL-1", stage="precheck", reason="file not found")]})
     result = ReviewResult(report_md="# Code Review: demo/app\n\n## Score: 90 / 100\n", data=data, cached=True)
-    monkeypatch.setattr(orchestrator, "lookup_cache",
+    monkeypatch.setattr(service, "find_cached_review",
                         lambda url, opts=None: orchestrator.CacheLookup("c" * 40, "k", result))
     return result
 
@@ -65,7 +65,7 @@ def _submit(at, url="https://github.com/demo/app"):
 
 @pytest.fixture
 def cache_miss(monkeypatch):
-    monkeypatch.setattr(orchestrator, "lookup_cache",
+    monkeypatch.setattr(service, "find_cached_review",
                         lambda url, opts=None: orchestrator.CacheLookup("c" * 40, "k", None))
 
 
@@ -75,7 +75,7 @@ def test_ai_failure_shows_generic_message(cache_miss, monkeypatch):
     def fail(*a, **k):
         raise LLMError("quota exhausted; key AIzaSECRET at C:/internal/path")
 
-    monkeypatch.setattr(orchestrator, "run_review", fail)
+    monkeypatch.setattr(service, "review_repo", fail)
     at = _submit(_app())
     assert not at.exception
     errors = " ".join(e.value for e in at.error)
@@ -84,7 +84,7 @@ def test_ai_failure_shows_generic_message(cache_miss, monkeypatch):
 
 
 def test_unexpected_error_is_generic(cache_miss, monkeypatch):
-    monkeypatch.setattr(orchestrator, "run_review", lambda *a, **k: 1 / 0)
+    monkeypatch.setattr(service, "review_repo", lambda *a, **k: 1 / 0)
     at = _submit(_app())
     assert not at.exception
     assert any("Something went wrong" in e.value for e in at.error)
@@ -103,7 +103,7 @@ def test_repo_error_refunds_daily_quota(cache_miss, monkeypatch):
         refunds.append(refund)
         original(self, refund=refund)
 
-    monkeypatch.setattr(orchestrator, "run_review", too_big)
+    monkeypatch.setattr(service, "review_repo", too_big)
     monkeypatch.setattr(Quota, "release", spy)
     at = _submit(_app())
     assert any("too large" in e.value for e in at.error)

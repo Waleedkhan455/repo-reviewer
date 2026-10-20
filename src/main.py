@@ -7,10 +7,8 @@ import argparse
 import sys
 from pathlib import Path
 
-from src import config
-from src.llm import LLMError
-from src.orchestrator import ReviewError, ReviewOptions, run_review
-from src.repo import RepoError
+from src import config, service
+from src.service import LLMError, RepoError, ReviewError, ReviewOptions
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -27,7 +25,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         opts = ReviewOptions(verify=not args.no_verify, bug_hunter=args.bug_hunter, commit=args.commit,
                              use_cache=not args.no_cache)
-        result = run_review(args.url, opts, progress=lambda msg: print(f"... {msg}", file=sys.stderr))
+        result = service.review_repo(args.url, opts, progress=lambda msg: print(f"... {msg}", file=sys.stderr))
     except (RepoError, LLMError, ReviewError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2

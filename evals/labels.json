@@ -1,0 +1,290 @@
+{
+  "00b96c8fbce5b540": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "064b5a2cc42e2f05": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "0ee8ae7a1adf8a1a": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "190f92c63558697c": {
+    "verdict": "real",
+    "gt_id": "GT-4"
+  },
+  "19dd12dac3561598": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "1ae330c722ed5d99": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "1b2e7dcc6c6e631b": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "1d76d69d9f697692": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "1e32433144c9cc8e": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "20d6a9fed184df33": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "228345e42ebc21be": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "23872e4d6b4dc276": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "2700c086c82a236b": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "29f387b3356a5dca": {
+    "verdict": "real",
+    "gt_id": "GT-1"
+  },
+  "2cc6491bb55956cf": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "324edc2e770fb352": {
+    "verdict": "real",
+    "gt_id": "GT-2"
+  },
+  "3c123dfe60bdf5fc": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "46563cdc4ce28792": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "482e207dfecd070e": {
+    "verdict": "real",
+    "gt_id": "GT-1"
+  },
+  "5189cb29a3e59ab9": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "53e2fb942356978d": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "563a0ed9c7e0287a": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "5f38e74ca3dfc6f7": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "5fc5a1d23bae583c": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "679b9eb4fbfec57e": {
+    "verdict": "real",
+    "gt_id": "GT-3"
+  },
+  "6e13331bd1bb3cff": {
+    "verdict": "real",
+    "gt_id": "GT-3"
+  },
+  "7451ef53cef3db32": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "7676289e3e23be54": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "7896088736f4e559": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "7f61d3590f6ae566": {
+    "verdict": "real",
+    "gt_id": "GT-1"
+  },
+  "7f6443f78368ae6a": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "8159682eb6bb8621": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "819c45b8e3a9cc88": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "8a5988a46a8d97b0": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "904b3f98efbc32f2": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "94169140bc27888d": {
+    "verdict": "real",
+    "gt_id": "GT-2"
+  },
+  "958e656e049a475f": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "9687eded892ccbad": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "9946409ec10fca6a": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "9fe5c6dca0663a7b": {
+    "verdict": "real",
+    "gt_id": "GT-2"
+  },
+  "a2b877d61374a85f": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "a2c194fcd5a4f713": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "a5f9eab04cbd3257": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "a624218ca25e6c03": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "aa6b0fd4907fdf5b": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "aea642fcad7a8677": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "b16238657218b4d4": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "b5784cf8255a3668": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "b8271bf99a4dd5de": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "c14e0121ebca6f84": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "c417808a9e42066e": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "c4d29cfb89dd5073": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "c687f93a34a1f4dc": {
+    "verdict": "real",
+    "gt_id": "GT-1"
+  },
+  "cf52731fb177f66f": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "cf9d3b8407de001b": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "cf9dcebf41d2fffe": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "d5b5bd9b17a1ea42": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "d894c221eb93bf65": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "d8c9069c1c64fc15": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "defebb2877f9f979": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "df22888016a5fbec": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "dfe2cd7946fc9d07": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "e2407df3f2040930": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "e4595052c653bcbd": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "e84710ce507b2493": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "ef142d164e32428f": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "ef6379f924f3066d": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "efe8e3405bca1713": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "f301f18528a66097": {
+    "verdict": "false",
+    "gt_id": null
+  },
+  "f6bb5070a33af2dd": {
+    "verdict": "real",
+    "gt_id": "GT-1"
+  },
+  "fcdab7f826ba99f2": {
+    "verdict": "real",
+    "gt_id": null
+  },
+  "ff18b57829f5c5e6": {
+    "verdict": "false",
+    "gt_id": null
+  }
+}

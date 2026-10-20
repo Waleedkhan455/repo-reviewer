@@ -217,7 +217,7 @@ def dedupe(findings: list[Finding]) -> tuple[list[Finding], list[str]]:
     return kept, dropped
 
 
-def _static_analysis(root: Path, snapshot: Snapshot, warnings: list[str],
+def static_analysis(root: Path, snapshot: Snapshot, warnings: list[str],
                      scoped: bool = False) -> tuple[list[ToolFinding], bool]:
     """Scanner hits, plus whether any scanner failed (the review is then not cached).
 
@@ -263,7 +263,7 @@ class SpecialistResults:
         return sum(r.invalid_items for r in self.reviews.values())
 
 
-def _run_specialists(snapshot: Snapshot, plan: Plan, chunks: dict[str, list[list[str]]],
+def run_specialists(snapshot: Snapshot, plan: Plan, chunks: dict[str, list[list[str]]],
                      hits: list[ToolFinding], notify: Progress, include_architect: bool = True) -> SpecialistResults:
     progress: Queue[str] = Queue()  # workers report batches here; only this thread calls notify()
 
@@ -398,13 +398,13 @@ def _review_clone(ref: RepoRef, root: Path, opts: ReviewOptions, stats: RunStats
     log_event("review_start", repo=ref.slug, commit=commit, files=len(snapshot.files))
 
     notify("Running static analysis")
-    hits, scan_degraded = _static_analysis(root, snapshot, warnings)
+    hits, scan_degraded = static_analysis(root, snapshot, warnings)
     notify("Planning")
     plan, chunks = make_plan(snapshot, hits, with_bug_hunter=opts.bug_hunter)
     warnings += plan_warnings(plan)
 
     notify("Running agents: " + ", ".join(["architect", *chunks]).replace("_", " "))
-    spec = _run_specialists(snapshot, plan, chunks, hits, notify)
+    spec = run_specialists(snapshot, plan, chunks, hits, notify)
     warnings += spec.warnings
     raw = spec.findings()
 
@@ -460,6 +460,7 @@ def _build_data(ref: RepoRef, commit: str, opts: ReviewOptions, plan: Plan, hits
         score=result_score,
         stats=RunStatsOut(seconds=meta.seconds, llm_calls=stats.llm_calls, llm_errors=stats.llm_errors,
                           llm_seconds=round(stats.llm_seconds, 1), verifier_seconds=verify_seconds,
-                          verifier_calls=stats.calls_by_agent.get("verifier", 0)),
+                          verifier_calls=stats.calls_by_agent.get("verifier", 0),
+                          models_used=dict(stats.models_used)),
         warnings=meta.warnings,
     )

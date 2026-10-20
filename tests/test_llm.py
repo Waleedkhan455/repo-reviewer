@@ -158,3 +158,19 @@ def test_failure_on_last_model_is_retried_not_dropped(fake_client, monkeypatch):
     assert llm.call_llm("s", "u", agent="t") == '{"ok": 1}'
     assert used == ["a", "b", "b", "b"]  # both paused: keep retrying the last model with backoff
     assert len(sleeps) == 2
+
+
+def test_run_records_which_model_actually_answered(fake_client, monkeypatch):
+    from src.logger import RunStats, current_run
+
+    monkeypatch.setattr(llm.config, "MODEL_NAME", "primary")
+    monkeypatch.setattr(llm.config, "MODEL_FALLBACKS", ["lite"])
+    fake_client([errors.ServerError(503, {}), '{"ok": 1}'])
+    stats = RunStats()
+    token = current_run.set(stats)
+    try:
+        llm.call_llm("s", "u", agent="t")
+    finally:
+        current_run.reset(token)
+    assert stats.models_used == {"lite": 1}  # not the configured primary
+    assert stats.llm_calls == 2 and stats.llm_errors == 1

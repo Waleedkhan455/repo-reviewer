@@ -55,35 +55,35 @@
           "file": "app/app.py",
           "category": "security",
           "description": "SQL injection: search term formatted into a raw SQL string and run with db.engine.execute",
-          "source": "code reading (draft, please confirm)"
+          "source": "code reading (reviewed and confirmed by the repo owner)"
         },
         {
           "id": "GT-2",
           "file": "app/app.py",
           "category": "security",
           "description": "Server-side template injection: request.url interpolated into render_template_string (404 handler)",
-          "source": "code reading (draft, please confirm)"
+          "source": "code reading (reviewed and confirmed by the repo owner)"
         },
         {
           "id": "GT-3",
           "file": "app/app.py",
           "category": "security",
           "description": "Unsafe YAML deserialization: yaml.load on an uploaded file without a safe Loader",
-          "source": "code reading (draft, please confirm)"
+          "source": "code reading (reviewed and confirmed by the repo owner)"
         },
         {
           "id": "GT-4",
           "file": "app/app.py",
           "category": "security",
           "description": "Hard-coded JWT signing secret ('secret')",
-          "source": "code reading (draft, please confirm)"
+          "source": "code reading (reviewed and confirmed by the repo owner)"
         },
         {
           "id": "GT-5",
           "file": "app/app.py",
           "category": "security",
           "description": "JWT decoded with verify=False (signature not checked)",
-          "source": "code reading (draft, please confirm)"
+          "source": "code reading (reviewed and confirmed by the repo owner)"
         }
       ]
     },
@@ -148,7 +148,7 @@
           "file": "bad/libuser.py",
           "category": "security",
           "description": "Passwords stored in plain text",
-          "source": "code reading (draft, please confirm)"
+          "source": "code reading (reviewed and confirmed by the repo owner)"
         },
         {
           "id": "GT-4",

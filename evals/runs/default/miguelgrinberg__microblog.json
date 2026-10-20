@@ -354,7 +354,10 @@
     "llm_errors": 0,
     "llm_seconds": 26.2,
     "verifier_seconds": 59.6,
-    "verifier_calls": 10
+    "verifier_calls": 10,
+    "models_used": {
+      "gemini-3.5-flash-lite": 21
+    }
   },
   "warnings": []
 }
