@@ -120,3 +120,21 @@ def test_semgrep_configs_per_language():
     assert semgrep_configs({"python"}) == []  # Python is covered by bandit + ruff
     assert semgrep_configs({"javascript", "typescript"}) == ["p/javascript", "p/nodejsscan", "p/typescript"]
     assert "p/gosec" in semgrep_configs({"go"})
+
+
+def test_semgrep_binary_lookup(monkeypatch, tmp_path):
+    """Semgrep can live in its own venv (it pins mcp==1.29.0; the MCP server needs mcp 2.x)."""
+    import pytest
+
+    from src import config
+    from src.tools import static_scan
+
+    fake = tmp_path / "semgrep-bin"
+    fake.write_text("")
+    monkeypatch.setattr(config, "SEMGREP_BIN", str(fake))
+    assert static_scan._semgrep_bin() == str(fake)
+    monkeypatch.setattr(config, "SEMGREP_BIN", str(tmp_path / "missing"))
+    with pytest.raises(static_scan.ScanError, match="RR_SEMGREP_BIN"):
+        static_scan._semgrep_bin()
+    monkeypatch.setattr(config, "SEMGREP_BIN", "")
+    assert static_scan._semgrep_bin()  # found automatically (.venv-semgrep in this project)

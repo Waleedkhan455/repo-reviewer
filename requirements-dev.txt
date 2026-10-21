@@ -1,0 +1,4 @@
+# Development and CI: everything except Semgrep (install requirements-semgrep.txt into .venv-semgrep).
+-r requirements-mcp.txt
+streamlit==1.65.0
+pytest==9.1.1

@@ -25,3 +25,5 @@ max-complexity = 12
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# roots/list is deprecated in the 2026-07-28 MCP spec but still sent by current clients (see src/mcp_server/tools.py)
+filterwarnings = ["ignore:The roots capability is deprecated"]

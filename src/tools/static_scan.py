@@ -126,13 +126,24 @@ def run_ruff(root: Path, targets: list[str] | None = None) -> list[ToolFinding]:
 
 
 def _semgrep_bin() -> str:
-    """The semgrep executable installed next to this interpreter (never one from the scanned repo)."""
-    exe = Path(sys.executable).parent / ("semgrep.exe" if sys.platform == "win32" else "semgrep")
-    if exe.exists():
-        return str(exe)
+    """The semgrep executable (never one from the scanned repo).
+
+    Order: RR_SEMGREP_BIN, next to this interpreter, the project's .venv-semgrep, then PATH. Semgrep may
+    live in its own environment because it pins mcp==1.29.0 while the MCP server needs mcp 2.x.
+    """
+    name = "semgrep.exe" if sys.platform == "win32" else "semgrep"
+    if config.SEMGREP_BIN:
+        configured = Path(config.SEMGREP_BIN)
+        if not configured.is_file():
+            raise ScanError(f"RR_SEMGREP_BIN does not point to a file: {configured}")
+        return str(configured)
+    bin_dir = "Scripts" if sys.platform == "win32" else "bin"
+    for candidate in (Path(sys.executable).parent / name, config.ROOT / ".venv-semgrep" / bin_dir / name):
+        if candidate.is_file():
+            return str(candidate)
     found = shutil.which("semgrep")
     if not found:
-        raise ScanError("semgrep is not installed")
+        raise ScanError("semgrep is not installed (see requirements-semgrep.txt)")
     return found
 
 

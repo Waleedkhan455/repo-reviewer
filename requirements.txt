@@ -1,8 +1,5 @@
-google-genai==2.30.1
-pydantic==2.14.1
-python-dotenv==1.2.4
-bandit==1.9.4
-ruff==0.17.0
-pytest==9.1.1
+# Streamlit Community Cloud and the GitHub Action: one environment, Semgrep included.
+# (No MCP server here: Semgrep pins mcp==1.29.0, the MCP server needs mcp 2.x. See requirements-mcp.txt.)
+-r requirements-core.txt
 streamlit==1.65.0
 semgrep==1.181.0

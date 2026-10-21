@@ -83,6 +83,7 @@ SEMGREP_PACKS = {
     "typescript": ["p/typescript", "p/nodejsscan"],
     "go": ["p/golang", "p/gosec"],
 }
+SEMGREP_BIN = _env("RR_SEMGREP_BIN")  # optional explicit path; see static_scan._semgrep_bin
 SEMGREP_RULE_TIMEOUT_S = 10  # per rule per file
 SEMGREP_JOBS = 1
 SEMGREP_MAX_MEMORY_MB = 300  # Semgrep's own per-file memory cap
@@ -174,3 +175,31 @@ PR_MAX_TOTAL_INLINE_COMMENTS = 60  # per pull request, across all runs
 PR_BOT_LOGIN = _env("RR_BOT_LOGIN", "github-actions[bot]")  # only this author's comments are trusted
 
 APP_TRACE_COLUMNS = ["ts", "event", "agent", "model", "attempt", "latency_s", "prompt_chars", "reply_chars", "code"]
+
+# --- MCP server (src/mcp_server) ----------------------------------------------------
+MCP_MODE = _env("RR_MCP_MODE", "local")  # local (stdio, reviews local folders) | remote (HTTP, GitHub URLs only)
+MCP_ROOTS = [p for p in _env("RR_MCP_ROOTS").split(",") if p]  # folders local mode may review
+MCP_MAX_WAIT_S = 50  # longest a tool call waits for a job before returning a job handle
+MCP_JOB_TTL_S = 3600  # finished jobs (and their results) are kept this long
+MCP_MAX_JOBS = 200  # jobs stored at once (oldest finished ones are dropped first)
+MCP_MAX_QUEUE = 10  # queued + running jobs; further requests are refused
+MCP_PER_CALLER_DAILY = _int("RR_MCP_PER_CALLER_DAILY", 5)  # fresh reviews per caller per day (remote mode)
+MCP_TOP_FINDINGS = 10
+MCP_PAGE_MAX = 50
+MCP_REPORT_MAX_CHARS = 40_000
+MCP_TEXT_MAX_CHARS = 500
+MCP_EVIDENCE_MAX_CHARS = 300
+MCP_ALLOWED_HOSTS = [h for h in _env("RR_MCP_ALLOWED_HOSTS").split(",") if h]
+MCP_PROGRESS_KEEP = 50  # progress messages kept per job
+MCP_INPUT_MAX_CHARS = 500  # longest accepted string input (URL, path, ref, id)
+MCP_CONTEXT_LINES_MAX = 20  # get_finding: lines of code shown around a finding (local mode only)
+MCP_POLL_AFTER_S = 15  # suggested wait before polling a running job again
+MCP_ROOTS_TIMEOUT_S = 5  # how long to wait for the client's roots/list answer
+MCP_REF_MAX_CHARS = 100  # git refs accepted as base/head
+MCP_ID_MAX_CHARS = 64  # job ids and finding ids
+MCP_ERROR_MAX_CHARS = 200  # error text returned to the caller
+MCP_PATH_MAX_CHARS = 300  # file paths in outputs
+MCP_STATUS_PROGRESS = 10  # progress messages shown by get_review_status
+
+# Temporary clones (default: the system temp folder). Docker images may point this at a folder the app owns.
+CLONE_TMP_DIR = _env("RR_TMP_DIR")

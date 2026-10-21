@@ -190,7 +190,7 @@ def remove_tree(path: Path) -> None:
 @contextmanager
 def cloned_repo(ref: RepoRef, commit: str | None = None) -> Iterator[Path]:
     """Clone into a fresh per-run temp dir and always delete it afterwards."""
-    tmp = Path(tempfile.mkdtemp(prefix="rr_"))
+    tmp = Path(tempfile.mkdtemp(prefix="rr_", dir=config.CLONE_TMP_DIR or None))
     try:
         dest = tmp / "repo"
         clone(ref, dest, commit)

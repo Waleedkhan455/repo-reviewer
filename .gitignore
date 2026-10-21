@@ -10,3 +10,4 @@ reports/
 .cache/
 .streamlit/secrets.toml
 .rr-write-test-*
+.venv-semgrep/

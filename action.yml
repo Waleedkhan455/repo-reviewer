@@ -31,9 +31,11 @@ runs:
 
     - name: Install Repo Reviewer
       shell: bash
+      # The PR bot needs no MCP server, so core + Semgrep share one environment here.
       run: |
-        grep -v -E '^(streamlit|pytest)==' "$GITHUB_ACTION_PATH/requirements.txt" > "$RUNNER_TEMP/rr-requirements.txt"
-        python -m pip install --quiet -r "$RUNNER_TEMP/rr-requirements.txt"
+        python -m pip install --quiet \
+          -r "$GITHUB_ACTION_PATH/requirements-core.txt" \
+          -r "$GITHUB_ACTION_PATH/requirements-semgrep.txt"
 
     # Inputs reach the script only through environment variables, never interpolated into `run:`
     # (that would allow script injection from crafted input values).

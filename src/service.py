@@ -10,7 +10,7 @@ unavailable), ``ReviewError`` (every agent call failed) and ``DiffError`` (the c
 
 from pathlib import Path
 
-from src import changes, diffs, orchestrator
+from src import changes, config, diffs, orchestrator, repo
 from src.changes import PRReview
 from src.diffs import DiffError
 from src.llm import LLMError
@@ -19,7 +19,8 @@ from src.repo import RepoError
 
 __all__ = [
     "CacheLookup", "DiffError", "LLMError", "PRReview", "RepoError", "ReviewError", "ReviewOptions",
-    "ReviewResult", "find_cached_review", "load_cached_report", "review_changes", "review_repo",
+    "ReviewResult", "check_checkout", "find_cached_review", "load_cached_report", "resolve_ref", "review_changes",
+    "review_repo", "review_worktree", "source_lines",
 ]
 
 
@@ -55,3 +56,37 @@ def review_changes(root: Path, base: str, head: str, *, bug_hunter: bool = False
     """
     changed = diffs.changed_lines(root, base, head)
     return changes.review_changed_lines(root, changed, bug_hunter=bug_hunter, progress=progress)
+
+
+def review_worktree(root: Path, base: str = "HEAD", *, include_untracked: bool = True, bug_hunter: bool = False,
+                    progress: Progress | None = None) -> PRReview:
+    """Review uncommitted work in a local git checkout: staged and unstaged changes relative to ``base``
+    (a ref such as ``HEAD`` or ``main``), plus new untracked files when ``include_untracked`` is set."""
+    changed = diffs.worktree_changed_lines(root, base, include_untracked)
+    return changes.review_changed_lines(root, changed, bug_hunter=bug_hunter, progress=progress)
+
+
+def resolve_ref(root: Path, ref: str) -> str:
+    """The commit SHA for a git ref (``HEAD``, a branch, ``HEAD~2``) in the checkout at ``root``.
+
+    Raises ``DiffError`` for invalid or unknown refs.
+    """
+    return diffs.resolve_ref(root, ref)
+
+
+def check_checkout(root: Path) -> None:
+    """Refuse a local checkout whose own git config could make git run a program. Raises ``DiffError``."""
+    diffs.check_repo_config(root)
+
+
+def source_lines(root: Path, rel: str) -> list[str] | None:
+    """The lines of ``root/rel`` as the agents saw them, or None if it is not a regular file inside ``root``
+    (symlink or junction escapes included) or is over the size limit."""
+    try:
+        base = root.resolve(strict=True)
+        path = (base / rel).resolve(strict=True)
+        if not path.is_relative_to(base) or not path.is_file() or path.stat().st_size > config.MAX_FILE_BYTES:
+            return None
+        return repo.read_text(path).split("\n")
+    except (OSError, RuntimeError, ValueError):
+        return None
